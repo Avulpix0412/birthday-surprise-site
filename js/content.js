@@ -1,5 +1,5 @@
 export const memoryNodes = [
-  { id: "node-1", photos: ["assets/images/placeholder-1.svg"], story: "占位故事文字 1：我们第一次见面。", detail: "占位小细节：那天天气很好。" },
+  { id: "node-1", photos: ["assets/images/placeholder-1.svg", "assets/images/placeholder-1b.svg"], story: "占位故事文字 1：我们第一次见面。", detail: "占位小细节：那天天气很好。" },
   { id: "node-2", photos: ["assets/images/placeholder-2.svg"], story: "占位故事文字 2。", detail: "占位小细节 2。" },
   { id: "node-3", photos: ["assets/images/placeholder-3.svg"], story: "占位故事文字 3。", detail: "占位小细节 3。" },
   { id: "node-4", photos: ["assets/images/placeholder-4.svg"], story: "占位故事文字 4。", detail: "占位小细节 4。" },

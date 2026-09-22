@@ -19,3 +19,26 @@ test("scatterEggs creates one element per text with the min hit area", () => {
     assert.strictEqual(el.style.minHeight, `${MIN_HIT_AREA_PX}px`);
   });
 });
+
+test("clicking an egg reveals its text in place, at the same position, instead of falling into document flow", () => {
+  let clickHandler;
+  const icon = {
+    style: {},
+    className: "",
+    textContent: "",
+    addEventListener: (evt, cb) => { clickHandler = cb; },
+    replaceWith: (node) => { icon._replacedWith = node; },
+  };
+  global.document = {
+    createElement: () => icon,
+  };
+  const fakeContainer = { appendChild() {} };
+  scatterEggs(fakeContainer, ["surprise text"]);
+  icon.style.left = "12%";
+  icon.style.top = "34%";
+  clickHandler();
+  assert.strictEqual(icon._replacedWith.textContent, "surprise text");
+  assert.strictEqual(icon._replacedWith.style.position, "absolute");
+  assert.strictEqual(icon._replacedWith.style.left, "12%");
+  assert.strictEqual(icon._replacedWith.style.top, "34%");
+});

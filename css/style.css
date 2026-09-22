@@ -56,12 +56,22 @@ html, body {
   transform: translateY(0);
 }
 
-.memory-node img {
+.photo-strip {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 8px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.photo-strip-img {
+  scroll-snap-align: center;
+  flex: 0 0 100%;
   max-width: 100%;
   border-radius: 8px;
 }
 
-.memory-node img.img-fallback {
+.photo-strip-img.img-fallback {
   background: var(--color-paper);
   border: 2px dashed var(--color-accent);
   min-height: 150px;
@@ -72,9 +82,16 @@ html, body {
   height: 240px;
   margin: 24px auto;
   gap: 2px;
+  position: relative;
+  z-index: 10;
 }
 
-.wheel-host { margin: 24px auto; text-align: center; }
+.puzzle-host button.selected {
+  outline: 3px solid var(--color-accent);
+  outline-offset: -3px;
+}
+
+.wheel-host { margin: 24px auto; text-align: center; position: relative; z-index: 10; }
 .wheel-card {
   padding: 16px 24px;
   border-radius: 12px;
@@ -82,7 +99,13 @@ html, body {
   background: var(--color-paper);
 }
 
-.easter-egg {
+.puzzle-solved-msg {
+  text-align: center;
+  margin-top: 8px;
+}
+
+.easter-egg,
+.easter-egg-text {
   border: none;
   background: transparent;
   font-size: 1.5rem;
@@ -92,9 +115,14 @@ html, body {
 .letter-p {
   opacity: 0;
   animation: fadeIn 0.6s ease forwards;
+  animation-play-state: paused;
   max-width: 480px;
   margin-bottom: 12px;
   text-align: center;
+}
+
+#reveal.revealed .letter-p {
+  animation-play-state: running;
 }
 
 @keyframes fadeIn {
@@ -105,5 +133,4 @@ html, body {
   margin-top: 24px;
   font-size: 1.2rem;
   font-weight: bold;
-  text-align: center;
 }
