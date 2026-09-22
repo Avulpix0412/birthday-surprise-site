@@ -1,8 +1,9 @@
-import { memoryNodes, wheelOptions, easterEggTexts } from "./content.js";
+import { memoryNodes, wheelOptions, easterEggTexts, letterParagraphs, giftText } from "./content.js";
 import { observeReveal } from "./scrollAnimate.js";
 import { renderPuzzle } from "./puzzle.js";
 import { renderWheel } from "./wheel.js";
 import { scatterEggs } from "./easterEggs.js";
+import { renderReveal } from "./reveal.js";
 
 function renderTimeline() {
   const container = document.getElementById("timeline");
@@ -31,6 +32,13 @@ function renderTimeline() {
   scatterEggs(container, easterEggTexts);
 
   observeReveal(".memory-node");
+
+  const lastNode = document.getElementById(memoryNodes[memoryNodes.length - 1].id);
+  lastNode.addEventListener("transitionend", () => {
+    renderReveal(document.getElementById("reveal"), letterParagraphs, giftText, () => {
+      window.confetti && window.confetti({ particleCount: 150, spread: 70 });
+    });
+  }, { once: true });
 }
 
 document.getElementById("start-btn").addEventListener("click", () => {
