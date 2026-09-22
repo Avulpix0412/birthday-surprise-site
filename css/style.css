@@ -73,3 +73,11 @@ html, body {
   margin: 24px auto;
   gap: 2px;
 }
+
+.wheel-host { margin: 24px auto; text-align: center; }
+.wheel-card {
+  padding: 16px 24px;
+  border-radius: 12px;
+  border: 2px dashed var(--color-accent);
+  background: var(--color-paper);
+}

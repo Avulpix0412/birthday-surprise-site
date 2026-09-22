@@ -1,6 +1,7 @@
-import { memoryNodes } from "./content.js";
+import { memoryNodes, wheelOptions } from "./content.js";
 import { observeReveal } from "./scrollAnimate.js";
 import { renderPuzzle } from "./puzzle.js";
+import { renderWheel } from "./wheel.js";
 
 function renderTimeline() {
   const container = document.getElementById("timeline");
@@ -19,6 +20,11 @@ function renderTimeline() {
   renderPuzzle(puzzleHost, memoryNodes[3].photos[0], () => {
     puzzleHost.insertAdjacentHTML("beforeend", "<p>拼图完成！</p>");
   });
+
+  const wheelHost = document.createElement("div");
+  wheelHost.className = "wheel-host";
+  document.getElementById("node-6").insertAdjacentElement("afterend", wheelHost);
+  renderWheel(wheelHost, wheelOptions, () => {});
 
   observeReveal(".memory-node");
 }
