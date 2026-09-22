@@ -4,6 +4,9 @@ import { renderPuzzle } from "./puzzle.js";
 import { renderWheel } from "./wheel.js";
 import { scatterEggs } from "./easterEggs.js";
 import { renderReveal } from "./reveal.js";
+import { armAudioOnFirstGesture } from "./audio.js";
+
+armAudioOnFirstGesture(document.getElementById("bg-audio"));
 
 function renderTimeline() {
   const container = document.getElementById("timeline");
