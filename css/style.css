@@ -26,6 +26,10 @@ html, body {
   padding: 24px;
 }
 
+.section[hidden] {
+  display: none;
+}
+
 .start-btn {
   margin-top: 24px;
   padding: 12px 28px;
@@ -61,4 +65,11 @@ html, body {
   background: var(--color-paper);
   border: 2px dashed var(--color-accent);
   min-height: 150px;
+}
+
+.puzzle-host {
+  width: 240px;
+  height: 240px;
+  margin: 24px auto;
+  gap: 2px;
 }
