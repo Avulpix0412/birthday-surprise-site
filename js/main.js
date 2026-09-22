@@ -8,13 +8,10 @@ import { attachEgg } from "./easterEggs.js";
 import { buildLetterHTML, buildGiftHTML, triggerConfettiOnce } from "./reveal.js";
 import { buildTrayState, pickNudgeMessage } from "./collectibles.js";
 import { armAudioOnFirstGesture } from "./audio.js";
-import { initFlourish } from "./flourish.js";
 
 const bgAudio = document.getElementById("bg-audio");
 bgAudio.src = songPath;
 armAudioOnFirstGesture(bgAudio);
-
-initFlourish(document.getElementById("bg-flourish"));
 
 const cards = buildCardSequence({ memoryNodes, easterEggTexts, wheelOptions, letterParagraphs, giftText, giftClues });
 const stack = document.getElementById("card-stack");

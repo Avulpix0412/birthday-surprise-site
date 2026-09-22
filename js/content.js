@@ -34,7 +34,7 @@ export const letterParagraphs = [
 export const giftClues = [
   { id: "clue-thermos", icon: "assets/images/clue-thermos.svg" },
   { id: "clue-camera", icon: "assets/images/clue-camera.svg" },
-  { id: "clue-mirror", icon: "assets/images/clue-strawberry.png" },
+  { id: "clue-mirror", icon: "assets/images/clue-strawberry.svg" },
   { id: "clue-necklace", icon: "assets/images/clue-bouquet.svg" },
 ];
 

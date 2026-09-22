@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320">
+  <!-- Lavender sprig, top-left -->
+  <g transform="translate(30,20) rotate(-12)">
+    <rect x="-1.5" y="0" width="3" height="60" fill="#7fa66a"/>
+    <ellipse cx="0" cy="4" rx="7" ry="5" fill="#9b72c2"/>
+    <ellipse cx="0" cy="12" rx="7.5" ry="5" fill="#8a63b3"/>
+    <ellipse cx="0" cy="20" rx="8" ry="5" fill="#9b72c2"/>
+    <ellipse cx="0" cy="28" rx="7.5" ry="5" fill="#8a63b3"/>
+    <ellipse cx="0" cy="36" rx="7" ry="5" fill="#9b72c2"/>
+  </g>
+
+  <!-- Mimosa pom-pom cluster, upper-right -->
+  <g transform="translate(250,50)">
+    <rect x="-1" y="0" width="2" height="34" fill="#7fa66a"/>
+    <circle cx="-10" cy="-4" r="7" fill="#e0a53a"/>
+    <circle cx="4" cy="-10" r="7.5" fill="#eab54e"/>
+    <circle cx="10" cy="2" r="6.5" fill="#e0a53a"/>
+    <circle cx="-3" cy="6" r="6" fill="#eab54e"/>
+  </g>
+
+  <!-- Berry trio, center-left -->
+  <g transform="translate(70,150)">
+    <ellipse cx="0" cy="20" rx="2" ry="14" fill="#7fa66a"/>
+    <ellipse cx="-14" cy="-14" rx="8" ry="6" fill="#7fa66a" transform="rotate(-30 -14 -14)"/>
+    <circle cx="-6" cy="0" r="9" fill="#8b3a3a"/>
+    <circle cx="8" cy="-6" r="8" fill="#7a8a4a"/>
+    <circle cx="4" cy="10" r="8.5" fill="#e0763a"/>
+  </g>
+
+  <!-- Sage leaf sprig, lower-right -->
+  <g transform="translate(230,230) rotate(18)">
+    <rect x="-1.5" y="0" width="3" height="50" fill="#6b7d4a"/>
+    <ellipse cx="-9" cy="10" rx="10" ry="5" fill="#7fa66a" transform="rotate(-30 -9 10)"/>
+    <ellipse cx="9" cy="22" rx="10" ry="5" fill="#8ba179" transform="rotate(30 9 22)"/>
+    <ellipse cx="-8" cy="34" rx="9" ry="5" fill="#7fa66a" transform="rotate(-25 -8 34)"/>
+  </g>
+
+  <!-- Small white blossom, center -->
+  <g transform="translate(150,110)">
+    <ellipse cx="0" cy="-8" rx="5" ry="7" fill="#fdf9f0"/>
+    <ellipse cx="7" cy="-3" rx="5" ry="7" fill="#fdf9f0" transform="rotate(72 7 -3)"/>
+    <ellipse cx="4" cy="6" rx="5" ry="7" fill="#fdf9f0" transform="rotate(144 4 6)"/>
+    <ellipse cx="-4" cy="6" rx="5" ry="7" fill="#fdf9f0" transform="rotate(216 -4 6)"/>
+    <ellipse cx="-7" cy="-3" rx="5" ry="7" fill="#fdf9f0" transform="rotate(288 -7 -3)"/>
+    <circle cx="0" cy="0" r="4" fill="#e0a53a"/>
+  </g>
+
+  <!-- Second, smaller lavender sprig, lower-left -->
+  <g transform="translate(40,260) rotate(10)">
+    <rect x="-1.2" y="0" width="2.4" height="40" fill="#7fa66a"/>
+    <ellipse cx="0" cy="3" rx="5.5" ry="4" fill="#9b72c2"/>
+    <ellipse cx="0" cy="9" rx="6" ry="4" fill="#8a63b3"/>
+    <ellipse cx="0" cy="15" rx="6" ry="4" fill="#9b72c2"/>
+  </g>
+
+  <!-- Tiny bee accent -->
+  <g transform="translate(180,270)">
+    <ellipse cx="0" cy="0" rx="5" ry="3.5" fill="#e0a53a"/>
+    <path d="M -3 0 L 3 0" stroke="#4a332c" stroke-width="1.2"/>
+    <ellipse cx="-4" cy="-3" rx="3" ry="2" fill="#fdf9f0" opacity="0.8" transform="rotate(-20 -4 -3)"/>
+    <ellipse cx="4" cy="-3" rx="3" ry="2" fill="#fdf9f0" opacity="0.8" transform="rotate(20 4 -3)"/>
+  </g>
+</svg>

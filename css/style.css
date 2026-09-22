@@ -35,15 +35,31 @@ html, body {
   font-family: var(--font-body);
 }
 
-/* Blurred so the thin lines become soft color washes — a razor-sharp line
-   gives backdrop-filter nothing to visibly distort, which is why a naive
-   frosted-glass panel over crisp lines barely reads as "glass" at all. */
-#bg-flourish {
+/* Full-bleed garden illustration: a tiled hand-drawn botanical pattern
+   (lavender, mimosa, berries, sage leaves) instead of an abstract line
+   canvas, so the site actually reads as "a garden" rather than decorative
+   noise. A slow background-position drift keeps it alive without the
+   cost/complexity of a per-frame canvas redraw. */
+#bg-garden {
   position: fixed;
   inset: 0;
   z-index: 0;
-  display: block;
-  filter: blur(20px);
+  background-color: var(--bg);
+  background-image: url("../assets/images/bg-garden.svg");
+  background-size: 320px 320px;
+  background-repeat: repeat;
+  animation: gardenDrift 90s linear infinite;
+}
+
+@keyframes gardenDrift {
+  from { background-position: 0 0; }
+  to { background-position: 320px 320px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #bg-garden {
+    animation: none;
+  }
 }
 
 .section {
@@ -246,10 +262,10 @@ html, body {
    so the two never collide. */
 .clue-item {
   position: absolute;
-  left: 18px;
-  bottom: 18px;
-  width: 48px;
-  height: 48px;
+  left: 8px;
+  bottom: 4px;
+  width: 92px;
+  height: 92px;
   min-width: 44px;
   min-height: 44px;
   padding: 0;
@@ -263,7 +279,7 @@ html, body {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 4px 10px rgba(74, 51, 44, 0.35));
+  filter: drop-shadow(0 4px 10px rgba(74, 51, 44, 0.25));
 }
 
 .clue-item.collected {
