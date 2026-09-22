@@ -1,0 +1,39 @@
+:root {
+  --color-bg: #fdf6ec;
+  --color-paper: #fff9f0;
+  --color-accent: #e8927c;
+  --color-text: #5a4632;
+  --font-hand: "Helvetica", sans-serif; /* swapped for a real handwritten webfont later */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-hand);
+}
+
+.section {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.start-btn {
+  margin-top: 24px;
+  padding: 12px 28px;
+  min-height: 44px;
+  min-width: 44px;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: white;
+  font-size: 1rem;
+}
