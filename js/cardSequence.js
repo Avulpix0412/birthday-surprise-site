@@ -3,10 +3,12 @@ export const ACCENT_CYCLE = ["rose", "moss", "mustard", "violet", "teal"];
 const PUZZLE_AFTER_GROUP = 2;
 const WHEEL_AFTER_GROUP = 5;
 const EGG_GROUPS = [0, 3, 6];
+const CLUE_GROUPS = [1, 3, 5, 7];
 
-export function buildCardSequence({ memoryNodes, easterEggTexts, wheelOptions, letterParagraphs, giftText }) {
+export function buildCardSequence({ memoryNodes, easterEggTexts, wheelOptions, letterParagraphs, giftText, giftClues = [] }) {
   const cards = [];
   let eggCursor = 0;
+  let clueCursor = 0;
 
   memoryNodes.forEach((node, groupIndex) => {
     const accent = ACCENT_CYCLE[groupIndex % ACCENT_CYCLE.length];
@@ -16,6 +18,10 @@ export function buildCardSequence({ memoryNodes, easterEggTexts, wheelOptions, l
       if (photoIndex === 0 && EGG_GROUPS.includes(groupIndex)) {
         card.eggText = easterEggTexts[eggCursor];
         eggCursor++;
+      }
+      if (photoIndex === 0 && CLUE_GROUPS.includes(groupIndex) && clueCursor < giftClues.length) {
+        card.clue = giftClues[clueCursor];
+        clueCursor++;
       }
       cards.push(card);
     });

@@ -1,4 +1,4 @@
-import { memoryNodes, easterEggTexts, wheelOptions, letterParagraphs, giftText, songPath } from "./content.js";
+import { memoryNodes, easterEggTexts, wheelOptions, letterParagraphs, giftText, giftClues, songPath } from "./content.js";
 import { buildCardSequence } from "./cardSequence.js";
 import { decideSwipe } from "./swipeDecision.js";
 import { computePathPositions } from "./pathMap.js";
@@ -6,6 +6,7 @@ import { renderPuzzle } from "./puzzle.js";
 import { renderWheel } from "./wheel.js";
 import { attachEgg } from "./easterEggs.js";
 import { buildLetterHTML, buildGiftHTML, triggerConfettiOnce } from "./reveal.js";
+import { buildTrayState, pickNudgeMessage } from "./collectibles.js";
 import { armAudioOnFirstGesture } from "./audio.js";
 import { initFlourish } from "./flourish.js";
 
@@ -15,9 +16,37 @@ armAudioOnFirstGesture(bgAudio);
 
 initFlourish(document.getElementById("bg-flourish"));
 
-const cards = buildCardSequence({ memoryNodes, easterEggTexts, wheelOptions, letterParagraphs, giftText });
+const cards = buildCardSequence({ memoryNodes, easterEggTexts, wheelOptions, letterParagraphs, giftText, giftClues });
 const stack = document.getElementById("card-stack");
 let currentIndex = 0;
+const collectedClueIds = [];
+let nudgeCount = 0;
+let nudgeTimer = null;
+
+function collectClue(clueId, clueEl) {
+  if (collectedClueIds.includes(clueId)) return;
+  collectedClueIds.push(clueId);
+  clueEl.classList.add("collected");
+  renderTray();
+}
+
+function renderTray() {
+  const tray = document.getElementById("clue-tray");
+  tray.hidden = false;
+  const state = buildTrayState(giftClues, collectedClueIds);
+  tray.innerHTML = state.map((s) =>
+    `<div class="tray-slot ${s.collected ? "" : "empty"}">${s.collected ? `<img src="${s.icon}" alt="">` : ""}</div>`
+  ).join("");
+}
+
+function showNudge() {
+  const toast = document.getElementById("nudge-toast");
+  toast.textContent = pickNudgeMessage(nudgeCount);
+  nudgeCount++;
+  toast.classList.add("visible");
+  clearTimeout(nudgeTimer);
+  nudgeTimer = setTimeout(() => toast.classList.remove("visible"), 2500);
+}
 
 function buildCardElement(card, index) {
   const el = document.createElement("div");
@@ -31,6 +60,13 @@ function buildCardElement(card, index) {
       <div class="card-glass"><p class="card-story">${card.text}</p></div>
     `;
     if (card.eggText) attachEgg(el, card.eggText);
+    if (card.clue) {
+      const clueBtn = document.createElement("button");
+      clueBtn.className = "clue-item";
+      clueBtn.innerHTML = `<img src="${card.clue.icon}" alt="线索">`;
+      clueBtn.addEventListener("click", () => collectClue(card.clue.id, clueBtn), { once: true });
+      el.appendChild(clueBtn);
+    }
   } else if (card.kind === "puzzle") {
     el.innerHTML = `<div class="card-glass"><p class="card-story">拼一拼，找回这段回忆</p></div><div class="puzzle-host"></div>`;
     const host = el.querySelector(".puzzle-host");
@@ -80,7 +116,14 @@ function renderPathMap() {
 }
 
 function activateCard(index) {
-  if (cards[index].kind === "gift") {
+  const card = cards[index];
+  if (card.kind === "gift") {
+    const glass = cardEls[index].querySelector(".card-glass");
+    const collected = buildTrayState(giftClues, collectedClueIds).filter((s) => s.collected);
+    const recapHTML = collected.length
+      ? `<div class="clue-recap">${collected.map((s) => `<img src="${s.icon}" alt="">`).join("")}</div>`
+      : "";
+    glass.innerHTML = recapHTML + buildGiftHTML(card.text);
     triggerConfettiOnce(() => {
       window.confetti && window.confetti({ particleCount: 150, spread: 70 });
     });
@@ -89,6 +132,12 @@ function activateCard(index) {
 
 function goTo(newIndex, direction) {
   if (newIndex < 0 || newIndex >= cards.length) return;
+
+  const outgoingCard = cards[currentIndex];
+  if (outgoingCard.clue && !collectedClueIds.includes(outgoingCard.clue.id)) {
+    showNudge();
+  }
+
   const outgoing = cardEls[currentIndex];
   const incoming = cardEls[newIndex];
 
@@ -152,6 +201,7 @@ stack.addEventListener("pointercancel", endDrag);
 document.getElementById("start-btn").addEventListener("click", () => {
   document.getElementById("cover").hidden = true;
   stack.hidden = false;
+  renderTray();
   renderPathMap();
   activateCard(0);
 }, { once: true });

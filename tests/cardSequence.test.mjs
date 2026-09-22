@@ -17,6 +17,12 @@ const content = {
   wheelOptions: ["a", "b", "c", "d"],
   letterParagraphs: ["l1", "l2"],
   giftText: "gift",
+  giftClues: [
+    { id: "clue-a", icon: "a-icon.svg" },
+    { id: "clue-b", icon: "b-icon.svg" },
+    { id: "clue-c", icon: "c-icon.svg" },
+    { id: "clue-d", icon: "d-icon.svg" },
+  ],
 };
 
 test("buildCardSequence expands multi-photo nodes into one card per photo", () => {
@@ -67,4 +73,14 @@ test("buildCardSequence attaches easter egg texts to the first card of groups 0,
   assert.strictEqual(cards.find((c) => c.groupIndex === 0 && c.kind === "memory").eggText, "egg1");
   assert.strictEqual(cards.find((c) => c.groupIndex === 3 && c.kind === "memory").eggText, "egg2");
   assert.strictEqual(cards.find((c) => c.groupIndex === 6 && c.kind === "memory").eggText, "egg3");
+});
+
+test("buildCardSequence attaches one gift clue each to the first card of groups 1, 3, 5, and 7", () => {
+  const cards = buildCardSequence(content);
+  const withClues = cards.filter((c) => c.kind === "memory" && c.clue);
+  assert.strictEqual(withClues.length, 4);
+  assert.strictEqual(cards.find((c) => c.groupIndex === 1 && c.kind === "memory").clue.id, "clue-a");
+  assert.strictEqual(cards.find((c) => c.groupIndex === 3 && c.kind === "memory").clue.id, "clue-b");
+  assert.strictEqual(cards.find((c) => c.groupIndex === 5 && c.kind === "memory").clue.id, "clue-c");
+  assert.strictEqual(cards.find((c) => c.groupIndex === 7 && c.kind === "memory").clue.id, "clue-d");
 });

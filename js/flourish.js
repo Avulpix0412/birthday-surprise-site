@@ -12,11 +12,11 @@ export function paletteColor(palette, p) {
 }
 
 const PALETTE = [
-  [226, 116, 138], // rose
-  [127, 166, 106], // moss
-  [224, 165, 58],  // mustard
-  [155, 114, 194], // violet
-  [63, 168, 157],  // teal
+  [201, 141, 143], // rose
+  [138, 159, 118], // moss
+  [198, 160, 94],  // mustard
+  [151, 136, 171], // violet
+  [110, 163, 154], // teal
 ];
 
 const LINE_COUNT = 14;
@@ -53,8 +53,8 @@ export function initFlourish(canvas) {
       const y0 = line.yBase * H;
       ctx.beginPath();
       ctx.strokeStyle = paletteColor(PALETTE, line.colorPhase + t * 0.00003);
-      ctx.globalAlpha = 0.35;
-      ctx.lineWidth = 1.2;
+      ctx.globalAlpha = 0.55;
+      ctx.lineWidth = 2.4;
       for (let x = 0; x <= W; x += 8) {
         const y = y0 + Math.sin(x * 0.01 + line.phase + t * line.speed * 0.001) * line.amp;
         if (x === 0) ctx.moveTo(x, y);

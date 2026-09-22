@@ -28,6 +28,16 @@ export const letterParagraphs = [
   "占位情书文字第三段。",
 ];
 
+// Gift clues: small collectible objects that appear on specific memory
+// cards along the way, echoing a real gift's look/colors without naming
+// or showing the gift itself. Swap `icon` for a real image path any time.
+export const giftClues = [
+  { id: "clue-thermos", icon: "assets/images/clue-thermos.svg" },
+  { id: "clue-camera", icon: "assets/images/clue-camera.svg" },
+  { id: "clue-mirror", icon: "assets/images/clue-strawberry.png" },
+  { id: "clue-necklace", icon: "assets/images/clue-bouquet.svg" },
+];
+
 export const giftText = "占位礼物/旅行计划揭晓文字。";
 
 export const songPath = "assets/audio/song.mp3";
