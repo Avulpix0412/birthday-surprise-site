@@ -1,7 +1,8 @@
-import { memoryNodes, wheelOptions } from "./content.js";
+import { memoryNodes, wheelOptions, easterEggTexts } from "./content.js";
 import { observeReveal } from "./scrollAnimate.js";
 import { renderPuzzle } from "./puzzle.js";
 import { renderWheel } from "./wheel.js";
+import { scatterEggs } from "./easterEggs.js";
 
 function renderTimeline() {
   const container = document.getElementById("timeline");
@@ -25,6 +26,9 @@ function renderTimeline() {
   wheelHost.className = "wheel-host";
   document.getElementById("node-6").insertAdjacentElement("afterend", wheelHost);
   renderWheel(wheelHost, wheelOptions, () => {});
+
+  container.style.position = "relative";
+  scatterEggs(container, easterEggTexts);
 
   observeReveal(".memory-node");
 }

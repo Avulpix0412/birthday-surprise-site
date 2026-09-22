@@ -81,3 +81,10 @@ html, body {
   border: 2px dashed var(--color-accent);
   background: var(--color-paper);
 }
+
+.easter-egg {
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  z-index: 5;
+}
