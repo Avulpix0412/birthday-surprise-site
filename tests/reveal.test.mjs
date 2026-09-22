@@ -1,39 +1,23 @@
 import { test } from "node:test";
 import assert from "node:assert";
-import { renderReveal, armRevealAnimation } from "../js/reveal.js";
+import { buildLetterHTML, buildGiftHTML, triggerConfettiOnce } from "../js/reveal.js";
 
-test("renderReveal builds markup without triggering confetti", () => {
-  const fakeContainer = { innerHTML: "", hidden: true };
-  renderReveal(fakeContainer, ["p1", "p2"], "gift");
-  assert.strictEqual(fakeContainer.hidden, false);
-  assert.ok(fakeContainer.innerHTML.includes("p1"));
-  assert.ok(fakeContainer.innerHTML.includes("gift"));
+test("buildLetterHTML renders one paragraph per line with staggered delays", () => {
+  const html = buildLetterHTML(["p1", "p2"]);
+  assert.ok(html.includes("p1"));
+  assert.ok(html.includes("p2"));
+  assert.ok(html.includes("animation-delay:0s"));
+  assert.ok(html.includes("animation-delay:0.6s"));
 });
 
-test("armRevealAnimation triggers confetti exactly once, only when the container intersects", () => {
-  let calls = 0;
-  const unobserveCalls = [];
-  global.IntersectionObserver = class {
-    constructor(cb) { this.cb = cb; }
-    observe() {}
-    unobserve(el) { unobserveCalls.push(el); }
-  };
-  const fakeContainer = { classList: { add() {} } };
-  armRevealAnimation(fakeContainer, () => { calls++; });
-  assert.strictEqual(calls, 0);
+test("buildGiftHTML renders the gift text", () => {
+  assert.ok(buildGiftHTML("my gift").includes("my gift"));
 });
 
-test("armRevealAnimation fires confetti exactly once across repeated intersections", () => {
+test("triggerConfettiOnce calls the given function exactly once across repeated calls", () => {
   let calls = 0;
-  let capturedCb;
-  global.IntersectionObserver = class {
-    constructor(cb) { capturedCb = cb; }
-    observe() {}
-    unobserve() {}
-  };
-  const fakeContainer = { classList: { add() {} } };
-  const observer = armRevealAnimation(fakeContainer, () => { calls++; });
-  capturedCb([{ isIntersecting: true, target: fakeContainer }], observer);
-  capturedCb([{ isIntersecting: true, target: fakeContainer }], observer);
+  triggerConfettiOnce(() => { calls++; });
+  triggerConfettiOnce(() => { calls++; });
+  triggerConfettiOnce(() => { calls++; });
   assert.strictEqual(calls, 1);
 });

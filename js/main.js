@@ -1,60 +1,157 @@
-import { memoryNodes, wheelOptions, easterEggTexts, letterParagraphs, giftText, songPath } from "./content.js";
-import { observeReveal } from "./scrollAnimate.js";
+import { memoryNodes, easterEggTexts, wheelOptions, letterParagraphs, giftText, songPath } from "./content.js";
+import { buildCardSequence } from "./cardSequence.js";
+import { decideSwipe } from "./swipeDecision.js";
+import { computePathPositions } from "./pathMap.js";
 import { renderPuzzle } from "./puzzle.js";
 import { renderWheel } from "./wheel.js";
-import { scatterEggs } from "./easterEggs.js";
-import { renderReveal, armRevealAnimation } from "./reveal.js";
+import { attachEgg } from "./easterEggs.js";
+import { buildLetterHTML, buildGiftHTML, triggerConfettiOnce } from "./reveal.js";
 import { armAudioOnFirstGesture } from "./audio.js";
+import { initFlourish } from "./flourish.js";
 
 const bgAudio = document.getElementById("bg-audio");
 bgAudio.src = songPath;
 armAudioOnFirstGesture(bgAudio);
 
-function renderTimeline() {
-  const container = document.getElementById("timeline");
-  container.hidden = false;
-  container.innerHTML = memoryNodes.map((node) => `
-    <div class="memory-node" id="${node.id}">
-      <div class="photo-strip">
-        ${node.photos.map((src) => `<img src="${src}" class="photo-strip-img" alt="回忆照片" onerror="this.classList.add('img-fallback')">`).join("")}
-      </div>
-      <p class="story">${node.story}</p>
-      <p class="detail">${node.detail}</p>
-    </div>
-  `).join("");
+initFlourish(document.getElementById("bg-flourish"));
 
-  const nodeEls = container.querySelectorAll(".memory-node");
+const cards = buildCardSequence({ memoryNodes, easterEggTexts, wheelOptions, letterParagraphs, giftText });
+const stack = document.getElementById("card-stack");
+let currentIndex = 0;
 
-  const PUZZLE_AFTER_NODE_INDEX = 2;
-  const puzzleHost = document.createElement("div");
-  puzzleHost.className = "puzzle-host";
-  nodeEls[PUZZLE_AFTER_NODE_INDEX].insertAdjacentElement("afterend", puzzleHost);
-  renderPuzzle(puzzleHost, memoryNodes[PUZZLE_AFTER_NODE_INDEX].photos[0], () => {
-    puzzleHost.insertAdjacentHTML("afterend", "<p class=\"puzzle-solved-msg\">拼图完成！</p>");
-  });
+function buildCardElement(card, index) {
+  const el = document.createElement("div");
+  el.className = "card";
+  el.style.setProperty("--card-accent", `var(--${card.accent})`);
+  el.hidden = index !== 0;
 
-  const WHEEL_AFTER_NODE_INDEX = 5;
-  const wheelHost = document.createElement("div");
-  wheelHost.className = "wheel-host";
-  nodeEls[WHEEL_AFTER_NODE_INDEX].insertAdjacentElement("afterend", wheelHost);
-  renderWheel(wheelHost, wheelOptions, () => {});
+  if (card.kind === "memory") {
+    el.innerHTML = `
+      <img class="card-photo" src="${card.photo}" alt="回忆照片" onerror="this.classList.add('img-fallback')">
+      <div class="card-glass"><p class="card-story">${card.text}</p></div>
+    `;
+    if (card.eggText) attachEgg(el, card.eggText);
+  } else if (card.kind === "puzzle") {
+    el.innerHTML = `<div class="card-glass"><p class="card-story">拼一拼，找回这段回忆</p></div><div class="puzzle-host"></div>`;
+    const host = el.querySelector(".puzzle-host");
+    renderPuzzle(host, card.photo, () => {
+      host.insertAdjacentHTML("afterend", '<p class="puzzle-solved-msg">拼图完成！</p>');
+    });
+  } else if (card.kind === "wheel") {
+    el.innerHTML = `<div class="card-glass"><p class="card-story">转一转，看看是哪个"第一次"</p></div>`;
+    const wheelHost = document.createElement("div");
+    wheelHost.className = "wheel-host";
+    el.appendChild(wheelHost);
+    renderWheel(wheelHost, card.options, () => {});
+  } else if (card.kind === "letter") {
+    el.innerHTML = `<div class="card-glass">${buildLetterHTML(card.paragraphs)}</div>`;
+  } else if (card.kind === "gift") {
+    el.innerHTML = `<div class="card-glass">${buildGiftHTML(card.text)}</div>`;
+  }
 
-  container.style.position = "relative";
-  scatterEggs(container, easterEggTexts);
+  const tapPrev = document.createElement("div");
+  tapPrev.className = "tap-zone prev";
+  const tapNext = document.createElement("div");
+  tapNext.className = "tap-zone next";
+  el.appendChild(tapPrev);
+  el.appendChild(tapNext);
+  tapPrev.addEventListener("click", () => { if (currentIndex > 0) goTo(currentIndex - 1, "prev"); });
+  tapNext.addEventListener("click", () => { if (currentIndex < cards.length - 1) goTo(currentIndex + 1, "next"); });
 
-  observeReveal(".memory-node");
+  return el;
+}
 
-  const lastNode = nodeEls[nodeEls.length - 1];
-  lastNode.addEventListener("transitionend", () => {
-    const revealEl = document.getElementById("reveal");
-    renderReveal(revealEl, letterParagraphs, giftText);
-    armRevealAnimation(revealEl, () => {
+const cardEls = cards.map((card, i) => {
+  const el = buildCardElement(card, i);
+  stack.appendChild(el);
+  return el;
+});
+
+function renderPathMap() {
+  const svg = document.getElementById("path-map");
+  const points = computePathPositions(cards.length, 400, 40);
+  const pathD = points.map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`)).join(" ");
+  const circles = points.map((p, i) => {
+    const r = i === currentIndex ? 6 : 4;
+    const cls = i === currentIndex ? "current" : "";
+    return `<circle cx="${p.x}" cy="${p.y}" r="${r}" fill="var(--${cards[i].accent})" class="${cls}"></circle>`;
+  }).join("");
+  svg.innerHTML = `<path d="${pathD}" fill="none" stroke="var(--text-lt)" stroke-width="1.5" opacity="0.4"></path>${circles}`;
+}
+
+function activateCard(index) {
+  if (cards[index].kind === "gift") {
+    triggerConfettiOnce(() => {
       window.confetti && window.confetti({ particleCount: 150, spread: 70 });
     });
-  }, { once: true });
+  }
 }
+
+function goTo(newIndex, direction) {
+  if (newIndex < 0 || newIndex >= cards.length) return;
+  const outgoing = cardEls[currentIndex];
+  const incoming = cardEls[newIndex];
+
+  incoming.classList.add("is-dragging");
+  incoming.hidden = false;
+  incoming.style.transform = direction === "next" ? "translateX(100%)" : "translateX(-100%)";
+  void incoming.offsetHeight; // force reflow before re-enabling transition
+  incoming.classList.remove("is-dragging");
+  outgoing.classList.remove("is-dragging");
+
+  requestAnimationFrame(() => {
+    outgoing.style.transform = direction === "next" ? "translateX(-100%)" : "translateX(100%)";
+    incoming.style.transform = "translateX(0)";
+  });
+
+  outgoing.addEventListener("transitionend", function handler() {
+    outgoing.hidden = true;
+    outgoing.style.transform = "";
+    outgoing.removeEventListener("transitionend", handler);
+  });
+
+  currentIndex = newIndex;
+  renderPathMap();
+  activateCard(currentIndex);
+}
+
+let dragState = null;
+
+stack.addEventListener("pointerdown", (e) => {
+  dragState = { startX: e.clientX, startTime: Date.now(), el: cardEls[currentIndex], deltaX: 0 };
+  dragState.el.classList.add("is-dragging");
+});
+
+stack.addEventListener("pointermove", (e) => {
+  if (!dragState) return;
+  dragState.deltaX = e.clientX - dragState.startX;
+  dragState.el.style.transform = `translateX(${dragState.deltaX}px) rotate(${dragState.deltaX / 20}deg)`;
+});
+
+function endDrag() {
+  if (!dragState) return;
+  const { el, deltaX, startTime } = dragState;
+  const elapsed = Math.max(1, Date.now() - startTime);
+  const velocity = deltaX / elapsed;
+  const decision = decideSwipe({ deltaX, velocity, width: stack.clientWidth });
+  el.classList.remove("is-dragging");
+
+  if (decision === "next" && currentIndex < cards.length - 1) {
+    goTo(currentIndex + 1, "next");
+  } else if (decision === "prev" && currentIndex > 0) {
+    goTo(currentIndex - 1, "prev");
+  } else {
+    el.style.transform = "translateX(0)";
+  }
+  dragState = null;
+}
+
+stack.addEventListener("pointerup", endDrag);
+stack.addEventListener("pointercancel", endDrag);
 
 document.getElementById("start-btn").addEventListener("click", () => {
   document.getElementById("cover").hidden = true;
-  renderTimeline();
+  stack.hidden = false;
+  renderPathMap();
+  activateCard(0);
 }, { once: true });

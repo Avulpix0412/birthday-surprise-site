@@ -7,14 +7,16 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <canvas id="bg-flourish"></canvas>
+
+  <svg id="path-map" viewBox="0 0 400 40" aria-hidden="true"></svg>
+
   <section id="cover" class="section">
     <h1 class="cover-title">给你的生日惊喜</h1>
     <button id="start-btn" class="start-btn">点击开始</button>
   </section>
 
-  <section id="timeline" class="section" hidden></section>
-
-  <section id="reveal" class="section" hidden></section>
+  <div id="card-stack" hidden></div>
 
   <audio id="bg-audio" preload="none" loop></audio>
 

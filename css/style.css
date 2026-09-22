@@ -1,22 +1,50 @@
 :root {
-  --color-bg: #fdf6ec;
-  --color-paper: #fff9f0;
-  --color-accent: #e8927c;
-  --color-text: #5a4632;
-  --font-hand: "Helvetica", sans-serif; /* swapped for a real handwritten webfont later */
+  --bg: #fbf1e6;
+  --text: #4a332c;
+  --text-lt: #8a6f66;
+
+  /* Five "kusumi-iro"-inspired accent hues, bolder/more saturated than a
+     plain warm-beige monochrome, cycled across memory cards like the
+     reference site's per-week-module colors. */
+  --rose: #e2748a;
+  --moss: #7fa66a;
+  --mustard: #e0a53a;
+  --violet: #9b72c2;
+  --teal: #3fa89d;
+  --coral: #f2703f;
+
+  --glass-bg: rgba(255, 255, 255, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --glass-blur: blur(18px) saturate(150%);
+  --card-shadow: 0 24px 60px -22px rgba(74, 51, 44, 0.35), 0 3px 16px rgba(74, 51, 44, 0.12);
+
+  --font-hand: "Xingkai SC", "Kaiti SC", STKaiti, "Baoli SC", "PingFang SC", serif;
+  --font-body: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+  color-scheme: light;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
   width: 100%;
-  overflow-x: hidden;
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-hand);
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+#bg-flourish {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: block;
 }
 
 .section {
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
   width: 100%;
   display: flex;
@@ -30,6 +58,12 @@ html, body {
   display: none;
 }
 
+.cover-title {
+  font-family: var(--font-hand);
+  font-size: 2rem;
+  text-align: center;
+}
+
 .start-btn {
   margin-top: 24px;
   padding: 12px 28px;
@@ -37,66 +71,133 @@ html, body {
   min-width: 44px;
   border: none;
   border-radius: 999px;
-  background: var(--color-accent);
+  background: linear-gradient(135deg, var(--rose), var(--coral));
   color: white;
   font-size: 1rem;
+  box-shadow: var(--card-shadow);
 }
 
-.memory-node {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-  max-width: 480px;
-  margin-bottom: 48px;
-  text-align: center;
+/* Card stack: full-viewport swipeable cards, one active at a time. */
+#card-stack {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  touch-action: pan-y;
 }
 
-.memory-node.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.photo-strip {
+.card {
+  position: absolute;
+  inset: 0;
   display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  gap: 8px;
-  -webkit-overflow-scrolling: touch;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  transform: translateX(0);
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  will-change: transform;
 }
 
-.photo-strip-img {
-  scroll-snap-align: center;
-  flex: 0 0 100%;
+.card.is-dragging {
+  transition: none;
+}
+
+.card[hidden] {
+  display: none;
+}
+
+.card-photo {
   max-width: 100%;
-  border-radius: 8px;
+  max-height: 55vh;
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.photo-strip-img.img-fallback {
-  background: var(--color-paper);
-  border: 2px dashed var(--color-accent);
-  min-height: 150px;
+.card-photo.img-fallback {
+  width: 260px;
+  height: 200px;
+  background: var(--glass-bg);
+  border: 2px dashed var(--card-accent, var(--rose));
 }
+
+.card-glass {
+  margin-top: 20px;
+  max-width: 480px;
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 18px;
+  text-align: center;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)),
+    color-mix(in srgb, var(--card-accent, var(--rose)) 22%, transparent);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--card-shadow);
+}
+
+.card-story {
+  font-family: var(--font-hand);
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+
+.card-detail {
+  font-size: 0.9rem;
+  color: var(--text-lt);
+}
+
+.egg-btn {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  min-width: 44px;
+  min-height: 44px;
+  border: none;
+  background: transparent;
+  font-size: 1.6rem;
+  z-index: 2;
+}
+
+.egg-text {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  max-width: 200px;
+  font-size: 0.85rem;
+  text-align: right;
+  z-index: 2;
+}
+
+/* Tap zones for prev/next, layered above the card content but below
+   interactive elements like puzzle pieces (those use their own z-index). */
+.tap-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 25%;
+  z-index: 1;
+}
+
+.tap-zone.prev { left: 0; }
+.tap-zone.next { right: 0; }
 
 .puzzle-host {
-  width: 240px;
-  height: 240px;
-  margin: 24px auto;
+  width: 260px;
+  height: 260px;
+  margin: 16px auto;
   gap: 2px;
   position: relative;
-  z-index: 10;
+  z-index: 3;
 }
 
 .puzzle-host button.selected {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid var(--mustard);
   outline-offset: -3px;
-}
-
-.wheel-host { margin: 24px auto; text-align: center; position: relative; z-index: 10; }
-.wheel-card {
-  padding: 16px 24px;
-  border-radius: 12px;
-  border: 2px dashed var(--color-accent);
-  background: var(--color-paper);
 }
 
 .puzzle-solved-msg {
@@ -104,25 +205,25 @@ html, body {
   margin-top: 8px;
 }
 
-.easter-egg,
-.easter-egg-text {
-  border: none;
-  background: transparent;
-  font-size: 1.5rem;
-  z-index: 5;
+.wheel-card {
+  padding: 16px 24px;
+  border-radius: 12px;
+  border: 2px dashed var(--violet);
+  background: var(--glass-bg);
+  position: relative;
+  z-index: 3;
+  min-height: 44px;
+  min-width: 44px;
 }
 
 .letter-p {
   opacity: 0;
   animation: fadeIn 0.6s ease forwards;
-  animation-play-state: paused;
   max-width: 480px;
   margin-bottom: 12px;
   text-align: center;
-}
-
-#reveal.revealed .letter-p {
-  animation-play-state: running;
+  font-family: var(--font-hand);
+  font-size: 1.15rem;
 }
 
 @keyframes fadeIn {
@@ -133,4 +234,31 @@ html, body {
   margin-top: 24px;
   font-size: 1.2rem;
   font-weight: bold;
+}
+
+/* Journey path mini-map, echoing the reference site's winding week-map. */
+#path-map {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  width: min(90vw, 420px);
+  height: 36px;
+  pointer-events: none;
+}
+
+#path-map circle {
+  transition: r 0.25s ease, opacity 0.25s ease;
+  opacity: 0.45;
+}
+
+#path-map circle.current {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
 }
