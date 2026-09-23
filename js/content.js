@@ -1,12 +1,16 @@
+// Photos are stand-ins in the same "painted storybook illustration" style
+// (public-domain Beatrix Potter plates) just to preview the full-bleed
+// photo + overlaid-text layout — swap for real illustrations any time,
+// same field shape.
 export const memoryNodes = [
-  { id: "node-1", photos: ["assets/images/placeholder-1.svg", "assets/images/placeholder-1b.svg"], story: "占位故事文字 1：我们第一次见面。", detail: "占位小细节：那天天气很好。" },
-  { id: "node-2", photos: ["assets/images/placeholder-2.svg"], story: "占位故事文字 2。", detail: "占位小细节 2。" },
-  { id: "node-3", photos: ["assets/images/placeholder-3.svg"], story: "占位故事文字 3。", detail: "占位小细节 3。" },
-  { id: "node-4", photos: ["assets/images/placeholder-4.svg"], story: "占位故事文字 4。", detail: "占位小细节 4。" },
-  { id: "node-5", photos: ["assets/images/placeholder-5.svg"], story: "占位故事文字 5。", detail: "占位小细节 5。" },
-  { id: "node-6", photos: ["assets/images/placeholder-6.svg"], story: "占位故事文字 6。", detail: "占位小细节 6。" },
-  { id: "node-7", photos: ["assets/images/placeholder-7.svg"], story: "占位故事文字 7。", detail: "占位小细节 7。" },
-  { id: "node-8", photos: ["assets/images/placeholder-8.svg"], story: "占位故事文字 8。", detail: "占位小细节 8。" },
+  { id: "node-1", photos: ["assets/images/placeholder-storybook/PeterRabbit4.jpg", "assets/images/placeholder-storybook/PeterRabbit5.jpg"], story: "占位故事文字 1：我们第一次见面。", detail: "占位小细节：那天天气很好。" },
+  { id: "node-2", photos: ["assets/images/placeholder-storybook/PeterRabbit6.jpg"], story: "占位故事文字 2。", detail: "占位小细节 2。" },
+  { id: "node-3", photos: ["assets/images/placeholder-storybook/PeterRabbit8.jpg"], story: "占位故事文字 3。", detail: "占位小细节 3。" },
+  { id: "node-4", photos: ["assets/images/placeholder-storybook/PeterRabbit12.jpg"], story: "占位故事文字 4。", detail: "占位小细节 4。" },
+  { id: "node-5", photos: ["assets/images/placeholder-storybook/PeterRabbit15.jpg"], story: "占位故事文字 5。", detail: "占位小细节 5。" },
+  { id: "node-6", photos: ["assets/images/placeholder-storybook/PeterRabbit4.jpg"], story: "占位故事文字 6。", detail: "占位小细节 6。" },
+  { id: "node-7", photos: ["assets/images/placeholder-storybook/PeterRabbit6.jpg"], story: "占位故事文字 7。", detail: "占位小细节 7。" },
+  { id: "node-8", photos: ["assets/images/placeholder-storybook/PeterRabbit8.jpg"], story: "占位故事文字 8。", detail: "占位小细节 8。" },
 ];
 
 export const easterEggTexts = [

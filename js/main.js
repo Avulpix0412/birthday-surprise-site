@@ -72,9 +72,10 @@ function buildCardElement(card, index) {
   el.hidden = index !== 0;
 
   if (card.kind === "memory") {
+    el.classList.add("has-photo");
     el.innerHTML = `
-      <img class="card-photo" src="${card.photo}" alt="回忆照片" onerror="this.classList.add('img-fallback')">
-      <div class="card-glass"><p class="card-story">${card.text}</p></div>
+      <img class="card-bg-photo" src="${card.photo}" alt="回忆照片" onerror="this.classList.add('img-fallback')">
+      <div class="card-text-overlay"><p class="card-story">${card.text}</p></div>
     `;
     if (card.eggText) attachEgg(el, card.eggText);
     if (card.clue) {
@@ -216,9 +217,16 @@ function endDrag() {
 stack.addEventListener("pointerup", endDrag);
 stack.addEventListener("pointercancel", endDrag);
 
+const audioToggle = document.getElementById("audio-toggle");
+audioToggle.addEventListener("click", () => {
+  bgAudio.muted = !bgAudio.muted;
+  audioToggle.textContent = bgAudio.muted ? "🔇" : "🎵";
+});
+
 document.getElementById("start-btn").addEventListener("click", () => {
   document.getElementById("cover").hidden = true;
   stack.hidden = false;
+  audioToggle.hidden = false;
   renderTray();
   renderPathMap();
   activateCard(0);
