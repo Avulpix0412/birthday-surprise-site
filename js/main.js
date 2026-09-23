@@ -20,6 +20,18 @@ const collectedClueIds = [];
 let nudgeCount = 0;
 let nudgeTimer = null;
 
+// Each third of the journey washes the shared garden pattern with a
+// different soft tint, echoing Litsee's "choose the world" chapters.
+const CHAPTER_TINT = [
+  "transparent",                 // chapter 0: as-drawn (the camera/adventure stretch)
+  "rgba(217, 72, 79, 0.14)",     // chapter 1: warm rose wash — the strawberry stretch
+  "rgba(151, 114, 194, 0.16)",   // chapter 2: violet wash — the necklace/finale stretch
+];
+
+function applyChapterTheme(chapter) {
+  document.documentElement.style.setProperty("--chapter-tint-color", CHAPTER_TINT[chapter] || CHAPTER_TINT[0]);
+}
+
 function collectClue(clueId, clueEl) {
   if (collectedClueIds.includes(clueId)) return;
   collectedClueIds.push(clueId);
@@ -36,13 +48,21 @@ function renderTray() {
   ).join("");
 }
 
-function showNudge() {
+function showNudge(missedClueId) {
   const toast = document.getElementById("nudge-toast");
   toast.textContent = pickNudgeMessage(nudgeCount);
   nudgeCount++;
   toast.classList.add("visible");
   clearTimeout(nudgeTimer);
   nudgeTimer = setTimeout(() => toast.classList.remove("visible"), 2500);
+
+  const slotIndex = giftClues.findIndex((c) => c.id === missedClueId);
+  const slot = document.querySelectorAll("#clue-tray .tray-slot")[slotIndex];
+  if (slot) {
+    slot.classList.remove("pulse");
+    void slot.offsetWidth; // restart animation if already mid-pulse
+    slot.classList.add("pulse");
+  }
 }
 
 function buildCardElement(card, index) {
@@ -59,7 +79,7 @@ function buildCardElement(card, index) {
     if (card.eggText) attachEgg(el, card.eggText);
     if (card.clue) {
       const clueBtn = document.createElement("button");
-      clueBtn.className = "clue-item";
+      clueBtn.className = `clue-item pos-${card.clue.pos}`;
       clueBtn.innerHTML = `<img src="${card.clue.icon}" alt="线索">`;
       clueBtn.addEventListener("click", () => collectClue(card.clue.id, clueBtn), { once: true });
       el.appendChild(clueBtn);
@@ -114,6 +134,7 @@ function renderPathMap() {
 
 function activateCard(index) {
   const card = cards[index];
+  applyChapterTheme(card.chapter);
   if (card.kind === "gift") {
     const glass = cardEls[index].querySelector(".card-glass");
     const collected = buildTrayState(giftClues, collectedClueIds).filter((s) => s.collected);
@@ -132,7 +153,7 @@ function goTo(newIndex, direction) {
 
   const outgoingCard = cards[currentIndex];
   if (outgoingCard.clue && !collectedClueIds.includes(outgoingCard.clue.id)) {
-    showNudge();
+    showNudge(outgoingCard.clue.id);
   }
 
   const outgoing = cardEls[currentIndex];

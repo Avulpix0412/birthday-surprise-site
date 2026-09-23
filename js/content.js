@@ -31,11 +31,13 @@ export const letterParagraphs = [
 // Gift clues: small collectible objects that appear on specific memory
 // cards along the way, echoing a real gift's look/colors without naming
 // or showing the gift itself. Swap `icon` for a real image path any time.
+// `pos` varies where it sits on the card (see .clue-item.pos-* in
+// style.css) so hunting for it doesn't always mean checking the same
+// corner.
 export const giftClues = [
-  { id: "clue-thermos", icon: "assets/images/clue-thermos.svg" },
-  { id: "clue-camera", icon: "assets/images/clue-camera.svg" },
-  { id: "clue-mirror", icon: "assets/images/clue-strawberry.svg" },
-  { id: "clue-necklace", icon: "assets/images/clue-bouquet.svg" },
+  { id: "clue-camera", icon: "assets/images/clue-camera.svg", pos: "top-right" },
+  { id: "clue-mirror", icon: "assets/images/clue-strawberry.svg", pos: "bottom-left" },
+  { id: "clue-necklace", icon: "assets/images/clue-bouquet.svg", pos: "mid-right" },
 ];
 
 export const giftText = "占位礼物/旅行计划揭晓文字。";
