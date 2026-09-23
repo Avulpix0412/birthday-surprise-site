@@ -18,7 +18,11 @@
   --glass-blur: blur(30px) saturate(180%);
   --card-shadow: 0 24px 60px -22px rgba(74, 51, 44, 0.32), 0 3px 16px rgba(74, 51, 44, 0.1);
 
-  --font-hand: "Xingkai SC", "Kaiti SC", STKaiti, "Baoli SC", "PingFang SC", serif;
+  /* Yuanti (rounded) reads as a friendly storybook typeface — Kaiti/Xingkai
+     are brush-calligraphy fonts that felt like a formal caption slapped on
+     a Western watercolor illustration rather than typography belonging to
+     the same picture-book world. */
+  --font-hand: "Yuanti SC", "PingFang SC", "Kaiti SC", serif;
   --font-body: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 
   color-scheme: light;
@@ -180,15 +184,25 @@ html, body {
   bottom: 0;
   z-index: 1;
   padding: 40px 28px 56px;
-  background: linear-gradient(to top, rgba(30, 20, 15, 0.68) 0%, rgba(30, 20, 15, 0.32) 55%, transparent 100%);
+  /* A warm brown scrim (not neutral black) so the shadow itself reads as
+     part of a sepia-toned painting's own shading rather than a UI overlay
+     dropped on top of it. */
+  background: linear-gradient(
+    to top,
+    rgba(58, 38, 28, 0.72) 0%,
+    color-mix(in srgb, var(--card-accent, var(--rose)) 45%, rgba(58, 38, 28, 0.5)) 45%,
+    transparent 100%
+  );
 }
 
 .card-text-overlay .card-story {
   font-family: var(--font-hand);
-  font-size: 1.5rem;
+  font-size: 1.55rem;
   font-weight: 700;
-  color: #fffdf8;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  color: #fbead2;
+  /* A soft warm glow instead of a hard black drop-shadow — closer to how
+     light would actually fall on lettering painted into a warm scene. */
+  text-shadow: 0 0 18px rgba(198, 160, 94, 0.55), 0 2px 6px rgba(40, 24, 16, 0.6);
   margin: 0;
 }
 
@@ -243,6 +257,7 @@ html, body {
   background: transparent;
   font-size: 1.6rem;
   z-index: 2;
+  filter: drop-shadow(0 3px 8px rgba(74, 51, 44, 0.35));
 }
 
 .egg-text {
@@ -357,7 +372,13 @@ html, body {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 4px 10px rgba(74, 51, 44, 0.25));
+  /* Warm/age the flat vector colors toward the same sepia-watercolor
+     palette as the photo underneath, and use a soft warm glow instead of
+     a crisp drop-shadow — a crisp shadow is what makes a flat icon read
+     as a sticker pasted on top rather than something painted into the
+     scene. */
+  filter: sepia(0.4) saturate(1.35) brightness(1.02)
+    drop-shadow(0 3px 8px rgba(74, 51, 44, 0.35));
 }
 
 .clue-item.collected {
