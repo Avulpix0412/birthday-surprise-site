@@ -18,12 +18,16 @@
   --glass-blur: blur(30px) saturate(180%);
   --card-shadow: 0 24px 60px -22px rgba(74, 51, 44, 0.32), 0 3px 16px rgba(74, 51, 44, 0.1);
 
-  /* Yuanti (rounded) reads as a friendly storybook typeface — Kaiti/Xingkai
-     are brush-calligraphy fonts that felt like a formal caption slapped on
-     a Western watercolor illustration rather than typography belonging to
-     the same picture-book world. */
-  --font-hand: "Yuanti SC", "PingFang SC", "Kaiti SC", serif;
+  /* Reference (Beanie's Bandana) uses an elegant Western serif for its
+     picture-book titling, not a rounded or brush-calligraphy face.
+     Songti is the closest Chinese equivalent in spirit: a classic serif
+     that reads as book typography rather than a UI font or hand-lettering. */
+  --font-hand: "Songti SC", "Noto Serif SC", "PingFang SC", serif;
   --font-body: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  /* A separate bold rounded face for buttons/CTAs and the notebook-style
+     UI — the reference never uses its narration serif for interactive
+     labels ("Who could it be?", "Submit"), only for storytelling text. */
+  --font-display: "PingFang SC", "Heiti SC", sans-serif;
 
   color-scheme: light;
 }
@@ -104,17 +108,28 @@ html, body {
   text-align: center;
 }
 
+/* Hand-drawn "wobbly" pill: an irregular border-radius per corner reads
+   as a painted button outline instead of a precise UI pill, matching the
+   reference's "Who could it be?" / "Submit" buttons. Also uses the bold
+   display font, never the narration serif — shared by every CTA button
+   on the site (.start-btn, .wheel-card). */
+.start-btn,
+.wheel-card {
+  font-family: var(--font-display);
+  font-weight: 700;
+  border: none;
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  box-shadow: var(--card-shadow);
+}
+
 .start-btn {
   margin-top: 24px;
   padding: 12px 28px;
   min-height: 44px;
   min-width: 44px;
-  border: none;
-  border-radius: 999px;
   background: linear-gradient(135deg, var(--rose), var(--coral));
   color: white;
   font-size: 1rem;
-  box-shadow: var(--card-shadow);
 }
 
 /* Card stack: full-viewport swipeable cards, one active at a time. */
@@ -184,6 +199,7 @@ html, body {
   bottom: 0;
   z-index: 1;
   padding: 40px 28px 56px;
+  text-align: left;
   /* A warm brown scrim (not neutral black) so the shadow itself reads as
      part of a sepia-toned painting's own shading rather than a UI overlay
      dropped on top of it. */
@@ -195,15 +211,56 @@ html, body {
   );
 }
 
+/* A card can sit its text at the top instead, when a photo's open space
+   (sky, a gap in foliage) is up there rather than at the bottom — pick
+   per real photo once the final art is in. */
+.card-text-overlay.pos-top {
+  top: 0;
+  bottom: auto;
+  background: linear-gradient(
+    to bottom,
+    rgba(58, 38, 28, 0.72) 0%,
+    color-mix(in srgb, var(--card-accent, var(--rose)) 45%, rgba(58, 38, 28, 0.5)) 45%,
+    transparent 100%
+  );
+}
+
 .card-text-overlay .card-story {
   font-family: var(--font-hand);
-  font-size: 1.55rem;
-  font-weight: 700;
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.5;
   color: #fbead2;
   /* A soft warm glow instead of a hard black drop-shadow — closer to how
      light would actually fall on lettering painted into a warm scene. */
   text-shadow: 0 0 18px rgba(198, 160, 94, 0.55), 0 2px 6px rgba(40, 24, 16, 0.6);
   margin: 0;
+}
+
+/* Three escalating emphasis tiers — wrap words in <span class="e1/e2/e3">
+   in content.js to get the reference's rising-size rhythm across a whole
+   line ("The one with the FURRY coat, BUSHY STRIPED tail, and DARK MASK")
+   instead of one flat sentence size or a single fixed-size keyword. */
+.card-story .e1 {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.card-story .e2 {
+  display: block;
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 2px 0;
+}
+
+.card-story .e3 {
+  display: block;
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 2px 0;
+  color: #ffe9bd;
 }
 
 .card-glass {
@@ -498,26 +555,23 @@ html, body {
   object-fit: contain;
 }
 
-/* Small persistent icon button, top-right — matches the reference sites'
-   circular audio/settings controls in the corner of every scene. */
+/* Small persistent icon, top-right — matches the reference's bare icon
+   glyphs sitting directly on the illustration (no glass chip), legible
+   across any photo via a soft shadow rather than a background plate. */
 #audio-toggle {
   position: fixed;
-  top: 12px;
-  right: 12px;
+  top: 14px;
+  right: 16px;
   z-index: 6;
-  width: 40px;
-  height: 40px;
   min-width: 44px;
   min-height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  font-size: 1.1rem;
+  border: none;
+  background: transparent;
+  font-size: 1.3rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
 }
 
 #audio-toggle[hidden] {

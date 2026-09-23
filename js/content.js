@@ -2,8 +2,14 @@
 // (public-domain Beatrix Potter plates) just to preview the full-bleed
 // photo + overlaid-text layout — swap for real illustrations any time,
 // same field shape.
+//
+// Wrap words in <span class="e1/e2/e3"> for the reference site's rising
+// three-tier size rhythm across a whole line (small lead-in -> bigger ->
+// biggest), instead of one flat sentence size. `textPos: "top"` moves the
+// scrim+text to the top of the card for a photo whose open space is up
+// there instead of at the bottom (default).
 export const memoryNodes = [
-  { id: "node-1", photos: ["assets/images/placeholder-storybook/PeterRabbit4.jpg", "assets/images/placeholder-storybook/PeterRabbit5.jpg"], story: "占位故事文字 1：我们第一次见面。", detail: "占位小细节：那天天气很好。" },
+  { id: "node-1", photos: ["assets/images/placeholder-storybook/PeterRabbit4.jpg", "assets/images/placeholder-storybook/PeterRabbit5.jpg"], story: "我们<span class=\"e1\">第一次</span><span class=\"e3\">见面</span>", detail: "占位小细节：那天天气很好。" },
   { id: "node-2", photos: ["assets/images/placeholder-storybook/PeterRabbit6.jpg"], story: "占位故事文字 2。", detail: "占位小细节 2。" },
   { id: "node-3", photos: ["assets/images/placeholder-storybook/PeterRabbit8.jpg"], story: "占位故事文字 3。", detail: "占位小细节 3。" },
   { id: "node-4", photos: ["assets/images/placeholder-storybook/PeterRabbit12.jpg"], story: "占位故事文字 4。", detail: "占位小细节 4。" },
