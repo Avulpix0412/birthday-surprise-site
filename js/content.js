@@ -224,6 +224,14 @@ export const memoryNodes = [
   },
 ];
 
+// The 4-panel comic she made (studying, teaching, the Xiangyang exam
+// trip, the concert) is dense edge to edge with its own art and
+// captions — there's no true empty band like the single-scene photos
+// have. Text sits at the top with the dark theme (panel 1's night-window
+// backdrop is dark there), same legibility approach as everywhere else,
+// grazing the least busy part of panel 1 rather than any panel's center.
+export const letterPhoto = "assets/images/scenes/letter-bg.jpg";
+
 export const letterParagraphs = [
   "这一年我们还一起经历了很多很多的事情，上班，考试，还一起去了两场演唱会，一个是我的偶像，一个是我们两个的偶像。",
   "回想起所有这些，仿佛已经和你认识了很久很久。",
@@ -238,8 +246,12 @@ export const giftClues = [
   { id: "clue-bouquet", icon: "assets/images/clues/bouquet-icon.png" },
 ];
 
-export const giftText =
-  "那么，在这个特别的日子，祝这个世界上最美丽，最温柔，最最可爱的张雨竹，生日快乐！<br><br>" +
-  "咦，在这次旅程中你收获了三件物品，它们分别是什么呢？";
+// Two separate boxes, not one — the blessing and the "what did you
+// collect" reveal are different beats and get their own card-glass panel
+// each; the three collected icons render inside the second box only.
+export const giftBlessingText =
+  "那么，在这个特别的日子，祝这个世界上最美丽，最温柔，最最可爱的张雨竹，生日快乐！";
+
+export const giftQuestionText = "咦，在这次旅程中你收获了三件物品，它们分别是什么呢？";
 
 export const songPath = "assets/audio/song.mp3";

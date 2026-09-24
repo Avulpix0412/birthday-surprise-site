@@ -1,4 +1,4 @@
-import { memoryNodes, letterParagraphs, giftText, giftClues, songPath } from "./content.js";
+import { memoryNodes, letterParagraphs, letterPhoto, giftBlessingText, giftQuestionText, giftClues, songPath } from "./content.js";
 import { buildCardSequence } from "./cardSequence.js";
 import { decideSwipe } from "./swipeDecision.js";
 import { buildLetterHTML, buildGiftHTML, triggerConfettiOnce } from "./reveal.js";
@@ -10,7 +10,7 @@ const bgAudio = document.getElementById("bg-audio");
 bgAudio.src = songPath;
 armAudioOnFirstGesture(bgAudio);
 
-const cards = buildCardSequence({ memoryNodes, letterParagraphs, giftText });
+const cards = buildCardSequence({ memoryNodes, letterParagraphs, letterPhoto, giftBlessingText, giftQuestionText });
 const stack = document.getElementById("card-stack");
 let currentIndex = 0;
 const collectedClueIds = [];
@@ -400,9 +400,26 @@ function buildCardElement(card, index) {
       el.appendChild(clueBtn);
     }
   } else if (card.kind === "letter") {
-    el.innerHTML = `<div class="card-glass">${buildLetterHTML(card.paragraphs)}</div>`;
+    // Not the full-bleed-cover + overlay treatment memory cards use — her
+    // 4-panel comic is dense edge to edge with no true empty band, so
+    // cropping or overlaying it anywhere covers some panel's own art and
+    // captions. Shown uncropped instead (full width, natural height) with
+    // the letter text below it in normal flow; the card scrolls
+    // vertically if the two together are taller than the screen.
+    el.classList.add("letter-card");
+    el.innerHTML = `
+      <img class="letter-comic-img" src="${card.photo}" alt="信" onerror="this.classList.add('img-fallback')">
+      <div class="letter-text-block">${buildLetterHTML(card.paragraphs)}</div>
+    `;
   } else if (card.kind === "gift") {
-    el.innerHTML = `<div class="card-glass">${buildGiftHTML(card.text)}</div>`;
+    // Two separate boxes, not one — the blessing and the "what did you
+    // collect" reveal are different beats. The recap icons are filled
+    // into the second box's placeholder by activateCard, once the final
+    // collected set is known.
+    el.innerHTML = `
+      <div class="card-glass">${buildGiftHTML(card.blessingText)}</div>
+      <div class="card-glass gift-question-glass"></div>
+    `;
   }
 
   const tapPrev = document.createElement("div");
@@ -430,14 +447,15 @@ function activateCard(index) {
     initAmbientEffect(cardEls[index].querySelector(".ambient-fx"), card.effect);
   }
   if (card.kind === "gift") {
-    const glass = cardEls[index].querySelector(".card-glass");
+    const questionGlass = cardEls[index].querySelector(".gift-question-glass");
     const collected = buildTrayState(giftClues, collectedClueIds).filter((s) => s.collected);
-    // Icons render after the text, not before — the copy asks "what did
-    // you collect?" and then the answer appears below it.
+    // Icons render after the question text, not before — the copy asks
+    // "what did you collect?" and the icons are its answer, in the same
+    // box as the question, separate from the blessing box.
     const recapHTML = collected.length
       ? `<div class="clue-recap">${collected.map((s) => `<img src="${s.icon}" alt="">`).join("")}</div>`
       : "";
-    glass.innerHTML = buildGiftHTML(card.text) + recapHTML;
+    questionGlass.innerHTML = buildGiftHTML(card.questionText) + recapHTML;
     triggerConfettiOnce(() => {
       window.confetti && window.confetti({ particleCount: 150, spread: 70 });
     });

@@ -9,7 +9,9 @@ const content = {
     { photos: ["p3.svg"], story: "story3", detail: "detail3" },
   ],
   letterParagraphs: ["l1", "l2"],
-  giftText: "gift",
+  letterPhoto: "letter.jpg",
+  giftBlessingText: "blessing",
+  giftQuestionText: "question",
 };
 
 test("buildCardSequence produces one memory card per node, in order", () => {
@@ -38,8 +40,10 @@ test("buildCardSequence ends with a letter card then a gift card", () => {
   const last2 = cards.slice(-2);
   assert.strictEqual(last2[0].kind, "letter");
   assert.deepStrictEqual(last2[0].paragraphs, ["l1", "l2"]);
+  assert.strictEqual(last2[0].photo, "letter.jpg");
   assert.strictEqual(last2[1].kind, "gift");
-  assert.strictEqual(last2[1].text, "gift");
+  assert.strictEqual(last2[1].blessingText, "blessing");
+  assert.strictEqual(last2[1].questionText, "question");
 });
 
 test("buildCardSequence cycles accents across memory nodes using ACCENT_CYCLE", () => {

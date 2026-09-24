@@ -1,6 +1,6 @@
 export const ACCENT_CYCLE = ["rose", "moss", "mustard", "violet", "teal"];
 
-export function buildCardSequence({ memoryNodes, letterParagraphs, giftText }) {
+export function buildCardSequence({ memoryNodes, letterParagraphs, letterPhoto, giftBlessingText, giftQuestionText }) {
   const cards = [];
 
   memoryNodes.forEach((node, groupIndex) => {
@@ -15,8 +15,8 @@ export function buildCardSequence({ memoryNodes, letterParagraphs, giftText }) {
     });
   });
 
-  cards.push({ kind: "letter", paragraphs: letterParagraphs, accent: "coral" });
-  cards.push({ kind: "gift", text: giftText, accent: "coral" });
+  cards.push({ kind: "letter", paragraphs: letterParagraphs, photo: letterPhoto, accent: "coral" });
+  cards.push({ kind: "gift", blessingText: giftBlessingText, questionText: giftQuestionText, accent: "coral" });
 
   return cards;
 }

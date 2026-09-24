@@ -366,11 +366,37 @@ html, body {
 .tap-zone.prev { left: 0; }
 .tap-zone.next { right: 0; }
 
+/* The letter card shows her 4-panel comic uncropped (no object-fit crop,
+   full width/natural height) with the text below it in normal document
+   flow, not overlaid — the comic has no blank space anywhere to safely
+   put text on top of. Scrolls vertically if the two together don't fit
+   one screen (#card-stack already allows vertical pan-through for this). */
+.card.letter-card {
+  display: block;
+  padding: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.card.letter-card[hidden] {
+  display: none;
+}
+
+.letter-comic-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.letter-text-block {
+  padding: 28px 24px 64px;
+}
+
 .letter-p {
   opacity: 0;
   animation: fadeIn 0.6s ease forwards;
   max-width: 480px;
-  margin-bottom: 12px;
+  margin: 0 auto 12px;
   text-align: center;
   font-family: var(--font-hand);
   font-size: 1.15rem;
