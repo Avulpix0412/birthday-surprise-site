@@ -7,7 +7,7 @@ export function buildCardSequence({ memoryNodes, letterParagraphs, giftText }) {
     const accent = ACCENT_CYCLE[groupIndex % ACCENT_CYCLE.length];
     node.photos.forEach((photo, photoIndex) => {
       const text = photoIndex === 0 ? node.story : (node.detail || "");
-      cards.push({ kind: "memory", groupIndex, photo, text, accent });
+      cards.push({ kind: "memory", groupIndex, photo, text, accent, effect: node.effect });
     });
   });
 

@@ -7,15 +7,20 @@
 // (provence-garden, bracelet clue) are meant to become the three special
 // interactive pages once the user provides separated interactive
 // elements for them — paused for now, see giftClues below.
+//
+// `effect` gives the other five pages some ambient motion (see
+// js/ambientEffects.js) without needing separated art: a canvas overlay
+// draws on top of the static photo. One of "rain-fireworks" / "twinkle"
+// / "drift-clouds" / "sparkle-burst", or omitted for no effect.
 export const memoryNodes = [
   { id: "node-1", photos: ["assets/images/scenes/strawberry-farm.jpg"], story: "", detail: "" },
-  { id: "node-2", photos: ["assets/images/scenes/riverside.jpg"], story: "", detail: "" },
-  { id: "node-3", photos: ["assets/images/scenes/mcdonalds.jpg"], story: "", detail: "" },
-  { id: "node-4", photos: ["assets/images/scenes/forbidden-city.jpg"], story: "", detail: "" },
+  { id: "node-2", photos: ["assets/images/scenes/riverside.jpg"], story: "", detail: "", effect: "rain-fireworks" },
+  { id: "node-3", photos: ["assets/images/scenes/mcdonalds.jpg"], story: "", detail: "", effect: "twinkle" },
+  { id: "node-4", photos: ["assets/images/scenes/forbidden-city.jpg"], story: "", detail: "", effect: "drift-clouds" },
   { id: "node-5", photos: ["assets/images/scenes/beihai-park.jpg"], story: "", detail: "" },
   { id: "node-6", photos: ["assets/images/scenes/provence-garden.jpg"], story: "", detail: "" },
-  { id: "node-7", photos: ["assets/images/scenes/universal-studios.jpg"], story: "", detail: "" },
-  { id: "node-8", photos: ["assets/images/scenes/great-wall.jpg"], story: "", detail: "" },
+  { id: "node-7", photos: ["assets/images/scenes/universal-studios.jpg"], story: "", detail: "", effect: "sparkle-burst" },
+  { id: "node-8", photos: ["assets/images/scenes/great-wall.jpg"], story: "", detail: "", effect: "drift-clouds" },
 ];
 
 export const letterParagraphs = [

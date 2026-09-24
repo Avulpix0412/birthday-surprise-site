@@ -4,6 +4,7 @@ import { decideSwipe } from "./swipeDecision.js";
 import { buildLetterHTML, buildGiftHTML, triggerConfettiOnce } from "./reveal.js";
 import { buildTrayState, pickNudgeMessage } from "./collectibles.js";
 import { armAudioOnFirstGesture } from "./audio.js";
+import { initAmbientEffect } from "./ambientEffects.js";
 
 const bgAudio = document.getElementById("bg-audio");
 bgAudio.src = songPath;
@@ -101,16 +102,17 @@ function buildCardElement(card, index) {
 
   if (card.kind === "memory") {
     el.classList.add("has-photo");
-    // A blurred, darkened copy of the same photo fills every pixel of the
-    // screen edge-to-edge; the sharp photo sits on top scaled to *contain*
-    // (never cropped) — full-bleed coverage without losing any of the
-    // picture, which object-fit:cover alone was cutting off on a portrait
-    // phone screen for a landscape illustration.
+    // Illustrations are pre-cropped to near-phone aspect ratio, so a plain
+    // cover-fit fills the screen with negligible cropping.
     el.innerHTML = `
-      <img class="card-bg-blur" src="${card.photo}" alt="" aria-hidden="true">
       <img class="card-bg-photo" src="${card.photo}" alt="回忆照片" onerror="this.classList.add('img-fallback')">
+      ${card.effect ? `<canvas class="ambient-fx"></canvas>` : ""}
       ${card.text ? `<div class="card-text-overlay"><p class="card-story">${card.text}</p></div>` : ""}
     `;
+    // Deferred to first activation (see activateCard), not started here:
+    // every card is built up front while #card-stack is still hidden, so
+    // the canvas would measure 0x0 (display:none collapses clientWidth/
+    // Height) if initialized immediately.
     if (card.clue && card.clue.hotspot) {
       attachHotspotClue(el, card.clue);
     } else if (card.clue && card.clue.pos) {
@@ -146,6 +148,10 @@ const cardEls = cards.map((card, i) => {
 
 function activateCard(index) {
   const card = cards[index];
+  if (card.effect && !card.effectStarted) {
+    card.effectStarted = true;
+    initAmbientEffect(cardEls[index].querySelector(".ambient-fx"), card.effect);
+  }
   if (card.kind === "gift") {
     const glass = cardEls[index].querySelector(".card-glass");
     const collected = buildTrayState(giftClues, collectedClueIds).filter((s) => s.collected);

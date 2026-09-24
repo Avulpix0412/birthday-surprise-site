@@ -49,3 +49,16 @@ test("buildCardSequence cycles accents across memory nodes using ACCENT_CYCLE", 
     assert.strictEqual(c.accent, ACCENT_CYCLE[i % ACCENT_CYCLE.length]);
   });
 });
+
+test("buildCardSequence carries a node's ambient effect onto its card(s), when present", () => {
+  const cards = buildCardSequence({
+    ...content,
+    memoryNodes: [
+      { photos: ["a.svg"], story: "s", detail: "d", effect: "rain-fireworks" },
+      { photos: ["b.svg"], story: "s2", detail: "d2" },
+    ],
+  });
+  const memoryCards = cards.filter((c) => c.kind === "memory");
+  assert.strictEqual(memoryCards[0].effect, "rain-fireworks");
+  assert.strictEqual(memoryCards[1].effect, undefined);
+});
