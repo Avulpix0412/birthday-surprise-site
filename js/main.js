@@ -196,20 +196,30 @@ function attachDragClue(hostEl, clue) {
 }
 
 // A clue where the "target" isn't another image but a point in the scene:
-// drag the camera up in front of her and it takes the photo — a shutter
-// flash plays, the background photo swaps to a same-composition
-// eyes-closed version the user provided for a beat, then back, and the
-// camera settles near her face. A miss snaps back to the corner, same
-// completability guarantee as attachDragClue.
+// a pulsing dashed ring at `targetPos` marks where to drop the camera —
+// aimed at her neck/collar, not her face. Dropping inside it takes the
+// photo — a shutter flash plays, the background photo swaps to a
+// same-composition eyes-closed version the user provided for a beat, then
+// back — and the camera settles at `restPos`, low and enlarged, reading
+// as an off-screen photographer's own hands rather than an object glued
+// to her body. A miss snaps back to the corner, same completability
+// guarantee as attachDragClue.
 function attachPhotoShootClue(hostEl, clue) {
   const { photoShoot: shot } = clue;
   const bgPhoto = hostEl.querySelector(".card-bg-photo");
+
+  const ring = document.createElement("div");
+  ring.className = "aim-ring";
+  ring.style.left = shot.targetPos.x;
+  ring.style.top = shot.targetPos.y;
+  ring.style.width = `${parseFloat(shot.targetRadius) * 2}%`;
+  hostEl.appendChild(ring);
 
   const hint = document.createElement("div");
   hint.className = "drag-hint";
   hint.style.left = shot.cameraPos.x;
   hint.style.top = shot.cameraPos.y;
-  hint.textContent = shot.hintText || "拖我到镜头前";
+  hint.textContent = shot.hintText || "给我拍张照吧";
   hostEl.appendChild(hint);
 
   const camera = document.createElement("img");
@@ -277,9 +287,17 @@ function attachPhotoShootClue(hostEl, clue) {
     // See attachDragClue for why this is a timeout, not `transitionend`.
     camera.style.transition = "transform 0.3s ease";
     if (dist < threshold) {
-      const finalDx = targetCenter.x - camDrag.originCenterX;
-      const finalDy = targetCenter.y - camDrag.originCenterY;
-      camera.style.transform = `translate(calc(-50% + ${finalDx}px), calc(-50% + ${finalDy}px))`;
+      // Settle at restPos (an off-screen photographer's own hands), not at
+      // the aim point itself — she's being photographed from a distance.
+      const restCenter = {
+        x: hostRect.left + (parseFloat(shot.restPos.x) / 100) * hostRect.width,
+        y: hostRect.top + (parseFloat(shot.restPos.y) / 100) * hostRect.height,
+      };
+      const finalDx = restCenter.x - camDrag.originCenterX;
+      const finalDy = restCenter.y - camDrag.originCenterY;
+      const restScale = parseFloat(shot.restSize) / parseFloat(shot.cameraSize);
+      camera.style.transform = `translate(calc(-50% + ${finalDx}px), calc(-50% + ${finalDy}px)) scale(${restScale})`;
+      ring.classList.add("fade-out");
       setTimeout(() => {
         camera.style.pointerEvents = "none";
         takePhoto();

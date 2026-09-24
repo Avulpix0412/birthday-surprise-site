@@ -12,10 +12,14 @@
 // successful drag is enough, no need to "fill" the basket.
 //
 // Page 5 (beihai-park): `clue.photoShoot` places a draggable camera in
-// the corner — drag it up in front of her to "take the photo": a shutter
-// flash plays, the background photo swaps to `blinkPhoto` for a beat
-// (a same-composition photo the user provided with her eyes closed) then
-// back to the normal photo, and the camera settles near her face.
+// the corner — a pulsing dashed ring at `targetPos` (aimed at her
+// neck/chest, not her face) marks where to drag it. Drop inside the ring
+// and a shutter flash plays, the background photo swaps to `blinkPhoto`
+// for a beat (a same-composition photo the user provided with her eyes
+// closed) then back to normal. Rather than snapping onto her body, the
+// camera settles at `restPos` — low, centered, and enlarged (`restSize`)
+// — reading as an off-screen photographer holding it up close to
+// themselves, at a distance from her, instead of glued to her face.
 //
 // All positions are {x, y} percentages of the card's own size, picked by
 // eye from the photo; sizes are percentages of the card's width (the
@@ -47,6 +51,7 @@ export const memoryNodes = [
         itemIcon: "assets/images/clues/strawberry-item.png",
         itemPos: { x: "11%", y: "72%" },
         itemSize: "13%",
+        hintText: "把这颗放到篮子里吧",
         basketIcon: "assets/images/clues/basket.png",
         basketPos: { x: "88%", y: "53%" },
         basketSize: "24%",
@@ -67,8 +72,15 @@ export const memoryNodes = [
         cameraIcon: "assets/images/clues/camera-item.png",
         cameraPos: { x: "82%", y: "90%" },
         cameraSize: "16%",
-        targetPos: { x: "57%", y: "49%" },
-        targetRadius: "16%",
+        hintText: "给我拍张照吧",
+        // Aimed at her neck/collar, not her face.
+        targetPos: { x: "57%", y: "60%" },
+        targetRadius: "14%",
+        // Where the camera settles after a successful shot: low and
+        // centered, enlarged — an off-screen photographer's own hands,
+        // not an object glued to her body.
+        restPos: { x: "50%", y: "88%" },
+        restSize: "30%",
         normalPhoto: "assets/images/scenes/beihai-park.jpg",
         blinkPhoto: "assets/images/scenes/beihai-park-blink.jpg",
       },

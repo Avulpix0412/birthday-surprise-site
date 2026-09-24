@@ -418,6 +418,42 @@ html, body {
   filter: drop-shadow(0 10px 18px rgba(74, 51, 44, 0.5));
 }
 
+/* A pulsing dashed ring marking where to drop a clue in the scene itself
+   (not on another drawn element like the basket) — an indirect visual
+   cue for the drop zone instead of relying on hint text alone. */
+.aim-ring {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  aspect-ratio: 1;
+  border: 3px dashed #ffcf6b;
+  border-radius: 50%;
+  /* A dark inner outline plus a warm outer glow — stays legible whether
+     it lands on a light or dark part of the photo, unlike a plain white
+     ring, which disappeared against her white sweater. */
+  box-shadow: 0 0 0 2px rgba(58, 38, 28, 0.45), 0 0 16px rgba(255, 207, 107, 0.75);
+  pointer-events: none;
+  z-index: 2;
+  animation: aimRingPulse 1.6s ease-in-out infinite;
+}
+
+.aim-ring.fade-out {
+  animation: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+@keyframes aimRingPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.92); opacity: 0.55; }
+  50% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aim-ring {
+    animation: none;
+    opacity: 0.85;
+  }
+}
+
 /* Camera-shutter flash — a quick white flash covering the whole card,
    timed to mask the moment the background photo swaps to the
    eyes-closed version underneath it. */
