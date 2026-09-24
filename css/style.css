@@ -778,15 +778,21 @@ html, body {
   }
 }
 
-/* Collection tray: fixed row of slots, filling in as clues are picked up. */
+/* Collection tray: fixed row of slots, filling in as clues are picked up.
+   Moved from top-center to bottom-left: several pages now put story text
+   in a top band (see .card-text-overlay.pos-top), which the tray used to
+   sit on top of. Bottom-left clears every current interactive element —
+   checked against the closest ones: the camera's bottom-center rest spot
+   (page 5, x:50% y:88% size:30%, left edge at ~35% of card width) and the
+   bouquet items (page 6, none left of x:13%, none below y:58% on the
+   left side) — with room to spare. */
 #clue-tray {
   position: fixed;
-  top: 56px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 10px;
+  bottom: max(14px, env(safe-area-inset-bottom));
   z-index: 2;
   display: flex;
-  gap: 10px;
+  gap: 8px;
   padding: 6px 10px;
   border-radius: 999px;
   background: var(--glass-bg);
@@ -800,8 +806,8 @@ html, body {
 }
 
 .tray-slot {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: rgba(74, 51, 44, 0.12);
   display: flex;
