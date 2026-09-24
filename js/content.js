@@ -71,9 +71,51 @@ export const memoryNodes = [
       },
     },
   },
-  { id: "node-2", photos: ["assets/images/scenes/riverside.jpg"], story: "", detail: "", effect: "rain-fireworks" },
-  { id: "node-3", photos: ["assets/images/scenes/mcdonalds.jpg"], story: "", detail: "", effect: "twinkle-chase" },
-  { id: "node-4", photos: ["assets/images/scenes/forbidden-city.jpg"], story: "", detail: "", effect: "petals-pink" },
+  {
+    id: "node-2",
+    photos: ["assets/images/scenes/riverside.jpg"],
+    story:
+      "在一起之后的第一个夜晚，天空中下着<span class=\"e2\">好大的雨。</span><br>" +
+      "当时只觉得自己很幸福，看着远处时有时无的烟花，<br>" +
+      "眼下只有我们两个打着一把伞相互依偎。<br>" +
+      "脑海中想的是要和你<span class=\"e3\">一起走下去</span>……",
+    detail: "",
+    // Night scene — dark ink would vanish into the dark sky, so this page
+    // uses the light-fill/dark-stroke variant instead.
+    textPos: "top",
+    textTheme: "dark",
+    effect: "rain-fireworks",
+  },
+  {
+    id: "node-3",
+    photos: ["assets/images/scenes/mcdonalds.jpg"],
+    // One block-level emphasis span, not two — the first draft's two
+    // spans pushed the text down far enough to cover the people in the
+    // photo; kept compact like page 4 instead.
+    story:
+      "转眼到了夏天。你第一次来北京找我。<br>" +
+      "那一天真的好开心，我带你去了很多我从小就去的地方，<br>" +
+      "和你一起走过熟悉的场景，我回想起了年初你带我在襄阳漫步时的感觉。<br>" +
+      "那晚的灯光很梦幻，你就像<span class=\"e2\">童话里走出的人物</span>一样……",
+    detail: "",
+    textPos: "top",
+    textTheme: "dark",
+    effect: "twinkle-chase",
+  },
+  {
+    id: "node-4",
+    photos: ["assets/images/scenes/forbidden-city.jpg"],
+    // Kept compact (only one block-level emphasis span) — the open sky
+    // above her is a much narrower band here than on the other pages.
+    story:
+      "亭亭玉立，<span class=\"e1\">花容月貌</span>。<br>" +
+      "在人群中一眼就能把你认出来，走了很多步却不觉得累。<br>" +
+      "边听你描述甄嬛传的情节边看着你，<br>" +
+      "眼前的你仿佛<span class=\"e2\">超脱于这个时代</span>……",
+    detail: "",
+    textPos: "top",
+    effect: "petals-pink",
+  },
   {
     id: "node-5",
     photos: ["assets/images/scenes/beihai-park.jpg"],

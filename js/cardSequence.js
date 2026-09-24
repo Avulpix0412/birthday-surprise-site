@@ -10,6 +10,7 @@ export function buildCardSequence({ memoryNodes, letterParagraphs, giftText }) {
       const card = { kind: "memory", groupIndex, photo, text, accent, effect: node.effect };
       if (photoIndex === 0 && node.clue) card.clue = node.clue;
       if (node.textPos) card.textPos = node.textPos;
+      if (node.textTheme) card.textTheme = node.textTheme;
       cards.push(card);
     });
   });

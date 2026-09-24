@@ -298,6 +298,21 @@ html, body {
   text-shadow: 0 2px 6px rgba(58, 38, 28, 0.3);
 }
 
+/* Night-scene variant: dark ink on a dark sky would be nearly invisible
+   even with a light stroke (the fill itself disappears, leaving only a
+   thin outline). Inverted instead — warm cream fill, dark stroke — same
+   "sticker" legibility trick, flipped for a dark background. */
+.card-text-overlay.theme-dark .card-story {
+  color: #fdf1de;
+  -webkit-text-stroke: 3px rgba(35, 22, 14, 0.85);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.card-text-overlay.theme-dark .card-story .e3 {
+  color: color-mix(in srgb, var(--card-accent, var(--rose)) 70%, #fff8ec);
+  -webkit-text-stroke: 4px rgba(35, 22, 14, 0.85);
+}
+
 .card-glass {
   position: relative;
   margin-top: 20px;

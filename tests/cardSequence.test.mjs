@@ -86,3 +86,16 @@ test("buildCardSequence carries a node's textPos onto its card(s), when present"
   assert.strictEqual(memoryCards[0].textPos, "top");
   assert.strictEqual(memoryCards[1].textPos, undefined);
 });
+
+test("buildCardSequence carries a node's textTheme onto its card(s), when present", () => {
+  const cards = buildCardSequence({
+    ...content,
+    memoryNodes: [
+      { photos: ["a.svg"], story: "s", detail: "d", textTheme: "dark" },
+      { photos: ["b.svg"], story: "s2", detail: "d2" },
+    ],
+  });
+  const memoryCards = cards.filter((c) => c.kind === "memory");
+  assert.strictEqual(memoryCards[0].textTheme, "dark");
+  assert.strictEqual(memoryCards[1].textTheme, undefined);
+});
