@@ -4,48 +4,33 @@ import { buildCardSequence, ACCENT_CYCLE } from "../js/cardSequence.js";
 
 const content = {
   memoryNodes: [
-    { photos: ["p1a.svg", "p1b.svg"], story: "story1", detail: "detail1" },
+    { photos: ["p1.svg"], story: "story1", detail: "detail1" },
     { photos: ["p2.svg"], story: "story2", detail: "detail2" },
     { photos: ["p3.svg"], story: "story3", detail: "detail3" },
-    { photos: ["p4.svg"], story: "story4", detail: "detail4" },
-    { photos: ["p5.svg"], story: "story5", detail: "detail5" },
-    { photos: ["p6.svg"], story: "story6", detail: "detail6" },
-    { photos: ["p7.svg"], story: "story7", detail: "detail7" },
-    { photos: ["p8.svg"], story: "story8", detail: "detail8" },
   ],
-  easterEggTexts: ["egg1", "egg2", "egg3"],
-  wheelOptions: ["a", "b", "c", "d"],
   letterParagraphs: ["l1", "l2"],
   giftText: "gift",
-  giftClues: [
-    { id: "clue-a", icon: "a-icon.svg", pos: "top-right" },
-    { id: "clue-b", icon: "b-icon.svg", pos: "bottom-left" },
-    { id: "clue-c", icon: "c-icon.svg", pos: "mid-right" },
-  ],
 };
 
-test("buildCardSequence expands multi-photo nodes into one card per photo", () => {
+test("buildCardSequence produces one memory card per node, in order", () => {
   const cards = buildCardSequence(content);
-  const memoryCardsForNode0 = cards.filter((c) => c.kind === "memory" && c.groupIndex === 0);
-  assert.strictEqual(memoryCardsForNode0.length, 2);
-  assert.strictEqual(memoryCardsForNode0[0].photo, "p1a.svg");
-  assert.strictEqual(memoryCardsForNode0[0].text, "story1");
-  assert.strictEqual(memoryCardsForNode0[1].photo, "p1b.svg");
-  assert.strictEqual(memoryCardsForNode0[1].text, "detail1");
+  const memoryCards = cards.filter((c) => c.kind === "memory");
+  assert.strictEqual(memoryCards.length, 3);
+  assert.deepStrictEqual(memoryCards.map((c) => c.photo), ["p1.svg", "p2.svg", "p3.svg"]);
+  assert.deepStrictEqual(memoryCards.map((c) => c.text), ["story1", "story2", "story3"]);
 });
 
-test("buildCardSequence inserts the puzzle card right after group index 2, and the wheel card right after group index 5", () => {
-  const cards = buildCardSequence(content);
-  const puzzleIdx = cards.findIndex((c) => c.kind === "puzzle");
-  const wheelIdx = cards.findIndex((c) => c.kind === "wheel");
-  assert.ok(puzzleIdx > -1);
-  assert.ok(wheelIdx > -1);
-  assert.strictEqual(cards[puzzleIdx - 1].groupIndex, 2);
-  assert.strictEqual(cards[puzzleIdx + 1].groupIndex, 3);
-  assert.strictEqual(cards[wheelIdx - 1].groupIndex, 5);
-  assert.strictEqual(cards[wheelIdx + 1].groupIndex, 6);
-  assert.strictEqual(cards[puzzleIdx].photo, "p3.svg");
-  assert.deepStrictEqual(cards[wheelIdx].options, ["a", "b", "c", "d"]);
+test("buildCardSequence expands multi-photo nodes into one card per photo", () => {
+  const cards = buildCardSequence({
+    ...content,
+    memoryNodes: [{ photos: ["a.svg", "b.svg"], story: "s", detail: "d" }],
+  });
+  const memoryCards = cards.filter((c) => c.kind === "memory");
+  assert.strictEqual(memoryCards.length, 2);
+  assert.strictEqual(memoryCards[0].photo, "a.svg");
+  assert.strictEqual(memoryCards[0].text, "s");
+  assert.strictEqual(memoryCards[1].photo, "b.svg");
+  assert.strictEqual(memoryCards[1].text, "d");
 });
 
 test("buildCardSequence ends with a letter card then a gift card", () => {
@@ -57,45 +42,10 @@ test("buildCardSequence ends with a letter card then a gift card", () => {
   assert.strictEqual(last2[1].text, "gift");
 });
 
-test("buildCardSequence cycles accents across memory card groups using ACCENT_CYCLE", () => {
+test("buildCardSequence cycles accents across memory nodes using ACCENT_CYCLE", () => {
   const cards = buildCardSequence(content);
-  for (let g = 0; g < content.memoryNodes.length; g++) {
-    const card = cards.find((c) => c.kind === "memory" && c.groupIndex === g);
-    assert.strictEqual(card.accent, ACCENT_CYCLE[g % ACCENT_CYCLE.length]);
-  }
-});
-
-test("buildCardSequence attaches easter egg texts to the first card of groups 0, 3, and 6 only", () => {
-  const cards = buildCardSequence(content);
-  const withEggs = cards.filter((c) => c.kind === "memory" && c.eggText);
-  assert.strictEqual(withEggs.length, 3);
-  assert.strictEqual(cards.find((c) => c.groupIndex === 0 && c.kind === "memory").eggText, "egg1");
-  assert.strictEqual(cards.find((c) => c.groupIndex === 3 && c.kind === "memory").eggText, "egg2");
-  assert.strictEqual(cards.find((c) => c.groupIndex === 6 && c.kind === "memory").eggText, "egg3");
-});
-
-test("buildCardSequence attaches one gift clue each to the first card of groups 1, 4, and 7", () => {
-  const cards = buildCardSequence(content);
-  const withClues = cards.filter((c) => c.kind === "memory" && c.clue);
-  assert.strictEqual(withClues.length, 3);
-  assert.strictEqual(cards.find((c) => c.groupIndex === 1 && c.kind === "memory").clue.id, "clue-a");
-  assert.strictEqual(cards.find((c) => c.groupIndex === 4 && c.kind === "memory").clue.id, "clue-b");
-  assert.strictEqual(cards.find((c) => c.groupIndex === 7 && c.kind === "memory").clue.id, "clue-c");
-});
-
-test("buildCardSequence assigns a chapter (0-2) to every card, grouping memory cards into rough thirds", () => {
-  const cards = buildCardSequence(content);
-  cards.forEach((c) => {
-    assert.ok([0, 1, 2].includes(c.chapter), `card kind=${c.kind} has invalid chapter ${c.chapter}`);
+  const memoryCards = cards.filter((c) => c.kind === "memory");
+  memoryCards.forEach((c, i) => {
+    assert.strictEqual(c.accent, ACCENT_CYCLE[i % ACCENT_CYCLE.length]);
   });
-  // Groups 0-2 => chapter 0, groups 3-5 => chapter 1, groups 6-7 => chapter 2
-  assert.strictEqual(cards.find((c) => c.groupIndex === 0 && c.kind === "memory").chapter, 0);
-  assert.strictEqual(cards.find((c) => c.groupIndex === 2 && c.kind === "memory").chapter, 0);
-  assert.strictEqual(cards.find((c) => c.groupIndex === 3 && c.kind === "memory").chapter, 1);
-  assert.strictEqual(cards.find((c) => c.groupIndex === 5 && c.kind === "memory").chapter, 1);
-  assert.strictEqual(cards.find((c) => c.groupIndex === 6 && c.kind === "memory").chapter, 2);
-  assert.strictEqual(cards.find((c) => c.groupIndex === 7 && c.kind === "memory").chapter, 2);
-  // The finale cards belong to the last chapter.
-  assert.strictEqual(cards.find((c) => c.kind === "letter").chapter, 2);
-  assert.strictEqual(cards.find((c) => c.kind === "gift").chapter, 2);
 });

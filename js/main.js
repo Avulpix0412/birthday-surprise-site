@@ -1,10 +1,7 @@
-import { memoryNodes, easterEggTexts, wheelOptions, letterParagraphs, giftText, giftClues, songPath } from "./content.js";
+import { memoryNodes, letterParagraphs, giftText, giftClues, songPath } from "./content.js";
 import { buildCardSequence } from "./cardSequence.js";
 import { decideSwipe } from "./swipeDecision.js";
 import { computePathPositions } from "./pathMap.js";
-import { renderPuzzle } from "./puzzle.js";
-import { renderWheel } from "./wheel.js";
-import { attachEgg } from "./easterEggs.js";
 import { buildLetterHTML, buildGiftHTML, triggerConfettiOnce } from "./reveal.js";
 import { buildTrayState, pickNudgeMessage } from "./collectibles.js";
 import { armAudioOnFirstGesture } from "./audio.js";
@@ -13,24 +10,12 @@ const bgAudio = document.getElementById("bg-audio");
 bgAudio.src = songPath;
 armAudioOnFirstGesture(bgAudio);
 
-const cards = buildCardSequence({ memoryNodes, easterEggTexts, wheelOptions, letterParagraphs, giftText, giftClues });
+const cards = buildCardSequence({ memoryNodes, letterParagraphs, giftText });
 const stack = document.getElementById("card-stack");
 let currentIndex = 0;
 const collectedClueIds = [];
 let nudgeCount = 0;
 let nudgeTimer = null;
-
-// Each third of the journey washes the shared garden pattern with a
-// different soft tint, echoing Litsee's "choose the world" chapters.
-const CHAPTER_TINT = [
-  "transparent",                 // chapter 0: as-drawn (the camera/adventure stretch)
-  "rgba(217, 72, 79, 0.14)",     // chapter 1: warm rose wash — the strawberry stretch
-  "rgba(151, 114, 194, 0.16)",   // chapter 2: violet wash — the necklace/finale stretch
-];
-
-function applyChapterTheme(chapter) {
-  document.documentElement.style.setProperty("--chapter-tint-color", CHAPTER_TINT[chapter] || CHAPTER_TINT[0]);
-}
 
 function collectClue(clueId, clueEl) {
   if (collectedClueIds.includes(clueId)) return;
@@ -65,12 +50,14 @@ function showNudge(missedClueId) {
   }
 }
 
-// For a clue that's already painted into the scene (e.g. one of the many
-// strawberries in strawberry-farm.jpg): an invisible tap target sits right
-// on top of it, and tapping flies a small copy of the clue icon from that
-// spot to wherever it "belongs" in the same picture (here, the basket
-// already drawn in it) before it joins the tray — the artwork itself
-// can't be edited, but the pick-up motion sells the interaction.
+// For a clue that's already painted into a scene (e.g. a strawberry among
+// dozens in strawberry-farm.jpg, once giftClues gets a `hotspot`/`target`
+// again): an invisible tap target sits right on top of it, and tapping
+// flies a small copy of the clue icon from that spot to wherever it
+// "belongs" in the same picture before it joins the tray — the artwork
+// itself can't be edited, but the pick-up motion sells the interaction.
+// Currently unused (giftClues has no hotspot yet) — reactivates as soon
+// as a clue entry gets one.
 function attachHotspotClue(hostEl, clue) {
   const hotspot = document.createElement("button");
   hotspot.className = "clue-hotspot";
@@ -115,32 +102,25 @@ function buildCardElement(card, index) {
 
   if (card.kind === "memory") {
     el.classList.add("has-photo");
+    // A blurred, darkened copy of the same photo fills every pixel of the
+    // screen edge-to-edge; the sharp photo sits on top scaled to *contain*
+    // (never cropped) — full-bleed coverage without losing any of the
+    // picture, which object-fit:cover alone was cutting off on a portrait
+    // phone screen for a landscape illustration.
     el.innerHTML = `
+      <img class="card-bg-blur" src="${card.photo}" alt="" aria-hidden="true">
       <img class="card-bg-photo" src="${card.photo}" alt="回忆照片" onerror="this.classList.add('img-fallback')">
-      <div class="card-text-overlay"><p class="card-story">${card.text}</p></div>
+      ${card.text ? `<div class="card-text-overlay"><p class="card-story">${card.text}</p></div>` : ""}
     `;
-    if (card.eggText) attachEgg(el, card.eggText);
     if (card.clue && card.clue.hotspot) {
       attachHotspotClue(el, card.clue);
-    } else if (card.clue) {
+    } else if (card.clue && card.clue.pos) {
       const clueBtn = document.createElement("button");
       clueBtn.className = `clue-item pos-${card.clue.pos}`;
       clueBtn.innerHTML = `<img src="${card.clue.icon}" alt="线索">`;
       clueBtn.addEventListener("click", () => collectClue(card.clue.id, clueBtn), { once: true });
       el.appendChild(clueBtn);
     }
-  } else if (card.kind === "puzzle") {
-    el.innerHTML = `<div class="card-glass"><p class="card-story">拼一拼，找回这段回忆</p></div><div class="puzzle-host"></div>`;
-    const host = el.querySelector(".puzzle-host");
-    renderPuzzle(host, card.photo, () => {
-      host.insertAdjacentHTML("afterend", '<p class="puzzle-solved-msg">拼图完成！</p>');
-    });
-  } else if (card.kind === "wheel") {
-    el.innerHTML = `<div class="card-glass"><p class="card-story">转一转，看看是哪个"第一次"</p></div>`;
-    const wheelHost = document.createElement("div");
-    wheelHost.className = "wheel-host";
-    el.appendChild(wheelHost);
-    renderWheel(wheelHost, card.options, () => {});
   } else if (card.kind === "letter") {
     el.innerHTML = `<div class="card-glass">${buildLetterHTML(card.paragraphs)}</div>`;
   } else if (card.kind === "gift") {
@@ -179,7 +159,6 @@ function renderPathMap() {
 
 function activateCard(index) {
   const card = cards[index];
-  applyChapterTheme(card.chapter);
   if (card.kind === "gift") {
     const glass = cardEls[index].querySelector(".card-glass");
     const collected = buildTrayState(giftClues, collectedClueIds).filter((s) => s.collected);
@@ -271,7 +250,6 @@ document.getElementById("start-btn").addEventListener("click", () => {
   document.getElementById("cover").hidden = true;
   stack.hidden = false;
   audioToggle.hidden = false;
-  renderTray();
   renderPathMap();
   activateCard(0);
 }, { once: true });
