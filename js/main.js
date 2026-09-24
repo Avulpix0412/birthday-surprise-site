@@ -403,22 +403,17 @@ function buildCardElement(card, index) {
     // Not the full-bleed-cover + overlay treatment memory cards use — her
     // 4-panel comic is dense edge to edge with no true empty band, so
     // cropping or overlaying it anywhere covers some panel's own art and
-    // captions. Shown uncropped instead (full width, natural height) with
-    // the letter text below it in normal flow; the card scrolls
-    // vertically if the two together are taller than the screen.
+    // captions. Shown uncropped instead (full width, natural height),
+    // with the letter text ABOVE it — text first means the text block
+    // doesn't fill the whole screen, so the comic's top edge peeks in at
+    // the bottom on load. That peek is itself the "there's more, keep
+    // scrolling" cue, no separate hint needed. Scrolls vertically if the
+    // two together are taller than the screen.
     el.classList.add("letter-card");
     el.innerHTML = `
-      <img class="letter-comic-img" src="${card.photo}" alt="信" onerror="this.classList.add('img-fallback')">
       <div class="letter-text-block">${buildLetterHTML(card.paragraphs)}</div>
-      <div class="scroll-hint">继续往下滑读信 ↓</div>
+      <img class="letter-comic-img" src="${card.photo}" alt="信" onerror="this.classList.add('img-fallback')">
     `;
-    // The comic is taller than one screen, so the letter text starts
-    // below the fold — without this, it looks like the text is missing
-    // rather than just further down. Fades once she's actually scrolling.
-    const hint = el.querySelector(".scroll-hint");
-    el.addEventListener("scroll", () => {
-      if (el.scrollTop > 16) hint.classList.add("faded");
-    }, { passive: true });
   } else if (card.kind === "gift") {
     // Two separate boxes, not one — the blessing and the "what did you
     // collect" reveal are different beats. The recap icons are filled
