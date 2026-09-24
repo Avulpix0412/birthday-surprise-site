@@ -470,24 +470,6 @@ html, body {
   animation: bouquetItemBob 1.8s ease-in-out infinite, bouquetItemGlow 2.2s ease-in-out infinite;
 }
 
-/* A warm breathing glow behind each sprig — no hard ring edge (that read
-   as too eye-catching on its own), just a soft gold bloom whose stronger
-   pulse (opacity and scale swing) carries the discoverability instead. */
-.bouquet-item::before {
-  content: "";
-  position: absolute;
-  inset: -22%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 225, 160, 0.55) 0%, rgba(255, 221, 150, 0.2) 55%, rgba(255, 221, 150, 0) 75%);
-  z-index: -1;
-  animation: bouquetHalo 2s ease-in-out infinite;
-}
-
-@keyframes bouquetHalo {
-  0%, 100% { opacity: 0.4; transform: scale(0.82); }
-  50% { opacity: 1; transform: scale(1.25); }
-}
-
 .bouquet-item img {
   width: 100%;
   display: block;
@@ -522,10 +504,7 @@ html, body {
 @media (prefers-reduced-motion: reduce) {
   .bouquet-item {
     animation: none;
-  }
-  .bouquet-item::before {
-    animation: none;
-    opacity: 0.7;
+    filter: drop-shadow(0 3px 8px rgba(74, 51, 44, 0.3)) drop-shadow(0 0 14px rgba(255, 225, 150, 0.9));
   }
   .bouquet-item.picked {
     animation: none;
