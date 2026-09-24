@@ -410,7 +410,15 @@ function buildCardElement(card, index) {
     el.innerHTML = `
       <img class="letter-comic-img" src="${card.photo}" alt="信" onerror="this.classList.add('img-fallback')">
       <div class="letter-text-block">${buildLetterHTML(card.paragraphs)}</div>
+      <div class="scroll-hint">继续往下滑读信 ↓</div>
     `;
+    // The comic is taller than one screen, so the letter text starts
+    // below the fold — without this, it looks like the text is missing
+    // rather than just further down. Fades once she's actually scrolling.
+    const hint = el.querySelector(".scroll-hint");
+    el.addEventListener("scroll", () => {
+      if (el.scrollTop > 16) hint.classList.add("faded");
+    }, { passive: true });
   } else if (card.kind === "gift") {
     // Two separate boxes, not one — the blessing and the "what did you
     // collect" reveal are different beats. The recap icons are filled
