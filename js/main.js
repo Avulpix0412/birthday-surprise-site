@@ -315,6 +315,56 @@ function attachPhotoShootClue(hostEl, clue) {
   camera.addEventListener("pointercancel", endCamDrag);
 }
 
+// A clue made of several separately-provided sprigs scattered over the
+// scene: tap each one to "pick" it (a scale+fade pop, no drag — six drags
+// would be tedious for one page), a small progress pill counts them down,
+// and once all are picked, the fully assembled bouquet image fades in as
+// the page's payoff.
+function attachBouquetClue(hostEl, clue) {
+  const { bouquet } = clue;
+  const total = bouquet.items.length;
+  let picked = 0;
+
+  const progress = document.createElement("div");
+  progress.className = "bouquet-progress";
+  progress.textContent = `0 / ${total}`;
+  hostEl.appendChild(progress);
+
+  function showReveal() {
+    const overlay = document.createElement("div");
+    overlay.className = "bouquet-reveal";
+    overlay.innerHTML = `
+      <div class="card-glass bouquet-reveal-card">
+        <img class="bouquet-reveal-img" src="${bouquet.resultImage}" alt="花束">
+      </div>
+    `;
+    hostEl.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add("visible"));
+    window.confetti && window.confetti({ particleCount: 130, spread: 80 });
+    collectClue(clue.id);
+  }
+
+  bouquet.items.forEach((item) => {
+    const btn = document.createElement("button");
+    btn.className = "bouquet-item";
+    btn.style.left = item.pos.x;
+    btn.style.top = item.pos.y;
+    btn.style.width = item.size;
+    btn.innerHTML = `<img src="${item.icon}" alt="花">`;
+    hostEl.appendChild(btn);
+
+    btn.addEventListener("click", () => {
+      btn.classList.add("picked");
+      picked++;
+      progress.textContent = `${picked} / ${total}`;
+      setTimeout(() => btn.remove(), 500);
+      if (picked === total) {
+        setTimeout(showReveal, 500);
+      }
+    }, { once: true });
+  });
+}
+
 function buildCardElement(card, index) {
   const el = document.createElement("div");
   el.className = "card";
@@ -338,6 +388,8 @@ function buildCardElement(card, index) {
       attachDragClue(el, card.clue);
     } else if (card.clue && card.clue.photoShoot) {
       attachPhotoShootClue(el, card.clue);
+    } else if (card.clue && card.clue.bouquet) {
+      attachBouquetClue(el, card.clue);
     } else if (card.clue && card.clue.hotspot) {
       attachHotspotClue(el, card.clue);
     } else if (card.clue && card.clue.pos) {

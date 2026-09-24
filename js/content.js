@@ -3,8 +3,11 @@
 // 环球影城 / 长城. No caption text for now (`story`/`detail` left empty —
 // card-text-overlay simply doesn't render when there's nothing to show).
 //
-// Page 6 (provence-garden, bracelet clue) is still paused pending
-// separated elements.
+// Page 6 (provence-garden): `clue.bouquet` scatters 6 separately-provided
+// flower/fruit sprigs over the scene (tap each — no drag, six drags would
+// be tedious). Each tap pops with a scale+fade, a small progress pill
+// counts them down, and once all six are picked, a full assembled
+// bouquet image fades in as the page's payoff.
 //
 // Page 1 (strawberry): `clue.drag` places a separately-provided
 // strawberry and basket on top of the scene — drag the strawberry into
@@ -86,7 +89,30 @@ export const memoryNodes = [
       },
     },
   },
-  { id: "node-6", photos: ["assets/images/scenes/provence-garden.jpg"], story: "", detail: "" },
+  {
+    id: "node-6",
+    photos: ["assets/images/scenes/provence-garden.jpg"],
+    story: "",
+    detail: "",
+    clue: {
+      id: "clue-bouquet",
+      bouquet: {
+        // Positions picked from open ground/sky around her figure (she
+        // occupies roughly the center column), near where the painted
+        // scene already has matching flowers/fruit, so each pick reads
+        // as "gathering what's already growing here".
+        items: [
+          { icon: "assets/images/clues/garden-item-1.png", pos: { x: "12%", y: "8%" }, size: "22%" },
+          { icon: "assets/images/clues/garden-item-2.png", pos: { x: "88%", y: "37%" }, size: "18%" },
+          { icon: "assets/images/clues/garden-item-3.png", pos: { x: "8%", y: "58%" }, size: "20%" },
+          { icon: "assets/images/clues/garden-item-4.png", pos: { x: "80%", y: "88%" }, size: "20%" },
+          { icon: "assets/images/clues/garden-item-5.png", pos: { x: "45%", y: "9%" }, size: "18%" },
+          { icon: "assets/images/clues/garden-item-6.png", pos: { x: "88%", y: "52%" }, size: "18%" },
+        ],
+        resultImage: "assets/images/clues/bouquet-full.png",
+      },
+    },
+  },
   { id: "node-7", photos: ["assets/images/scenes/universal-studios.jpg"], story: "", detail: "", effect: "glow-pulse" },
   { id: "node-8", photos: ["assets/images/scenes/great-wall.jpg"], story: "", detail: "", effect: "petals-gold" },
 ];
@@ -97,14 +123,10 @@ export const letterParagraphs = [
   "占位情书文字第三段。",
 ];
 
-// Gift clues: paused. Once the user provides separated interactive
-// elements for the strawberry / camera / bracelet pages, each entry here
-// gets a `hotspot` + `target` (see main.js's attachHotspotClue) or `pos`
-// and is wired back into cardSequence.js's card-attachment logic.
 export const giftClues = [
   { id: "clue-camera", icon: "assets/images/clues/camera-item.png" },
   { id: "clue-mirror", icon: "assets/images/clues/strawberry-item.png" },
-  { id: "clue-necklace", icon: "assets/images/clue-bouquet.svg" },
+  { id: "clue-bouquet", icon: "assets/images/clues/bouquet-icon.png" },
 ];
 
 export const giftText = "占位礼物/旅行计划揭晓文字。";
