@@ -467,7 +467,7 @@ html, body {
   border: none;
   background: transparent;
   cursor: pointer;
-  animation: bouquetItemBob 2.6s ease-in-out infinite, bouquetItemGlow 2.2s ease-in-out infinite;
+  animation: bouquetItemBob 1.8s ease-in-out infinite, bouquetItemGlow 2.2s ease-in-out infinite;
 }
 
 /* A warm breathing glow behind each sprig — no hard ring edge (that read
@@ -496,7 +496,7 @@ html, body {
 
 @keyframes bouquetItemBob {
   0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-  50% { transform: translate(-50%, -50%) scale(1.06) rotate(-2deg); }
+  50% { transform: translate(-50%, -50%) scale(1.18) rotate(-6deg); }
 }
 
 @keyframes bouquetItemGlow {
