@@ -203,13 +203,15 @@ html, body {
   z-index: 1;
   padding: 40px 28px 56px;
   text-align: left;
-  /* A warm brown scrim (not neutral black) so the shadow itself reads as
-     part of a sepia-toned painting's own shading rather than a UI overlay
-     dropped on top of it. */
+  /* A faint wash, not a solid banner — a picture book prints its text
+     straight onto the art; the dark panel this used to be made the text
+     read as a UI caption sitting on top of the illustration instead of
+     part of it. Only enough of a wash to keep ink legible over the
+     busiest photos. */
   background: linear-gradient(
     to top,
-    rgba(58, 38, 28, 0.72) 0%,
-    color-mix(in srgb, var(--card-accent, var(--rose)) 45%, rgba(58, 38, 28, 0.5)) 45%,
+    rgba(58, 38, 28, 0.22) 0%,
+    rgba(58, 38, 28, 0.08) 55%,
     transparent 100%
   );
 }
@@ -222,21 +224,24 @@ html, body {
   bottom: auto;
   background: linear-gradient(
     to bottom,
-    rgba(58, 38, 28, 0.72) 0%,
-    color-mix(in srgb, var(--card-accent, var(--rose)) 45%, rgba(58, 38, 28, 0.5)) 45%,
+    rgba(58, 38, 28, 0.22) 0%,
+    rgba(58, 38, 28, 0.08) 55%,
     transparent 100%
   );
 }
 
 .card-text-overlay .card-story {
   font-family: var(--font-hand);
-  font-size: 1.05rem;
-  font-weight: 500;
-  line-height: 1.5;
-  color: #fbead2;
-  /* A soft warm glow instead of a hard black drop-shadow — closer to how
-     light would actually fall on lettering painted into a warm scene. */
-  text-shadow: 0 0 18px rgba(198, 160, 94, 0.55), 0 2px 6px rgba(40, 24, 16, 0.6);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.6;
+  /* Warm ink brown, the same tone the rest of the site's own text uses —
+     reads as lettering drawn into the scene rather than a pale UI
+     caption. A soft light halo (not a dark drop-shadow) keeps it legible
+     over darker patches of a photo without needing the scrim to do all
+     the work. */
+  color: #4a2f1f;
+  text-shadow: 0 1px 2px rgba(255, 250, 240, 0.75), 0 0 14px rgba(255, 250, 240, 0.55);
   margin: 0;
 }
 
@@ -245,25 +250,29 @@ html, body {
    line ("The one with the FURRY coat, BUSHY STRIPED tail, and DARK MASK")
    instead of one flat sentence size or a single fixed-size keyword. */
 .card-story .e1 {
-  font-size: 1.3rem;
-  font-weight: 600;
+  font-size: 1.4rem;
+  font-weight: 700;
 }
 
 .card-story .e2 {
   display: block;
-  font-size: 1.9rem;
+  font-size: 2.1rem;
   font-weight: 700;
   line-height: 1.15;
-  margin: 2px 0;
+  margin: 4px 0;
 }
 
 .card-story .e3 {
   display: block;
-  font-size: 2.6rem;
+  font-size: 2.9rem;
   font-weight: 700;
   line-height: 1.1;
-  margin: 2px 0;
-  color: #ffe9bd;
+  margin: 4px 0;
+  /* Tied to the section's own accent hue instead of a fixed color, so
+     the emphasis color changes with each page instead of always
+     matching whichever page it was first tuned against. */
+  color: color-mix(in srgb, var(--card-accent, var(--rose)) 75%, #2e1c10);
+  text-shadow: 0 1px 2px rgba(255, 250, 240, 0.85), 0 0 16px rgba(255, 250, 240, 0.65);
 }
 
 .card-glass {
