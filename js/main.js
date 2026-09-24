@@ -169,26 +169,132 @@ function attachDragClue(hostEl, clue) {
     const dist = Math.hypot(currentCenter.x - basketCenter.x, currentCenter.y - basketCenter.y);
     const threshold = Math.max(basketRect.width, basketRect.height) * 0.6;
 
+    // A timeout (not `transitionend`) drives what happens after the settle
+    // animation: if the drop lands exactly on the snap target, the computed
+    // transform string never actually changes value, so no transition runs
+    // and `transitionend` would never fire.
     item.style.transition = "transform 0.3s ease";
     if (dist < threshold) {
       const finalDx = basketCenter.x - itemDrag.originCenterX;
       const finalDy = basketCenter.y - itemDrag.originCenterY;
       item.style.transform = `translate(calc(-50% + ${finalDx}px), calc(-50% + ${finalDy}px)) scale(0.55)`;
-      item.addEventListener("transitionend", () => {
+      setTimeout(() => {
         item.style.pointerEvents = "none";
         collectClue(clue.id);
-      }, { once: true });
+      }, 300);
     } else {
       item.style.transform = "translate(-50%, -50%)";
-      item.addEventListener("transitionend", () => {
+      setTimeout(() => {
         item.classList.remove("dragging");
-      }, { once: true });
+      }, 300);
     }
     itemDrag = null;
   }
 
   item.addEventListener("pointerup", endItemDrag);
   item.addEventListener("pointercancel", endItemDrag);
+}
+
+// A clue where the "target" isn't another image but a point in the scene:
+// drag the camera up in front of her and it takes the photo — a shutter
+// flash plays, the background photo swaps to a same-composition
+// eyes-closed version the user provided for a beat, then back, and the
+// camera settles near her face. A miss snaps back to the corner, same
+// completability guarantee as attachDragClue.
+function attachPhotoShootClue(hostEl, clue) {
+  const { photoShoot: shot } = clue;
+  const bgPhoto = hostEl.querySelector(".card-bg-photo");
+
+  const hint = document.createElement("div");
+  hint.className = "drag-hint";
+  hint.style.left = shot.cameraPos.x;
+  hint.style.top = shot.cameraPos.y;
+  hint.textContent = shot.hintText || "拖我到镜头前";
+  hostEl.appendChild(hint);
+
+  const camera = document.createElement("img");
+  camera.src = shot.cameraIcon;
+  camera.className = "drag-item";
+  camera.style.left = shot.cameraPos.x;
+  camera.style.top = shot.cameraPos.y;
+  camera.style.width = shot.cameraSize;
+  camera.setAttribute("alt", "线索");
+  hostEl.appendChild(camera);
+
+  function takePhoto() {
+    const flash = document.createElement("div");
+    flash.className = "shutter-flash";
+    hostEl.appendChild(flash);
+    flash.addEventListener("animationend", () => flash.remove(), { once: true });
+
+    bgPhoto.src = shot.blinkPhoto;
+    setTimeout(() => {
+      bgPhoto.src = shot.normalPhoto;
+    }, 320);
+
+    collectClue(clue.id);
+  }
+
+  let camDrag = null;
+
+  camera.addEventListener("pointerdown", (e) => {
+    e.stopPropagation();
+    hint.remove();
+    const rect = camera.getBoundingClientRect();
+    camDrag = {
+      startClientX: e.clientX,
+      startClientY: e.clientY,
+      originCenterX: rect.left + rect.width / 2,
+      originCenterY: rect.top + rect.height / 2,
+      dx: 0,
+      dy: 0,
+    };
+    camera.classList.add("dragging");
+    camera.setPointerCapture(e.pointerId);
+  });
+
+  camera.addEventListener("pointermove", (e) => {
+    if (!camDrag) return;
+    e.stopPropagation();
+    camDrag.dx = e.clientX - camDrag.startClientX;
+    camDrag.dy = e.clientY - camDrag.startClientY;
+    camera.style.transform = `translate(calc(-50% + ${camDrag.dx}px), calc(-50% + ${camDrag.dy}px))`;
+  });
+
+  function endCamDrag(e) {
+    if (!camDrag) return;
+    e.stopPropagation();
+
+    const hostRect = hostEl.getBoundingClientRect();
+    const targetCenter = {
+      x: hostRect.left + (parseFloat(shot.targetPos.x) / 100) * hostRect.width,
+      y: hostRect.top + (parseFloat(shot.targetPos.y) / 100) * hostRect.height,
+    };
+    const currentCenter = { x: camDrag.originCenterX + camDrag.dx, y: camDrag.originCenterY + camDrag.dy };
+    const dist = Math.hypot(currentCenter.x - targetCenter.x, currentCenter.y - targetCenter.y);
+    const threshold = (parseFloat(shot.targetRadius) / 100) * hostRect.width;
+
+    // See attachDragClue for why this is a timeout, not `transitionend`.
+    camera.style.transition = "transform 0.3s ease";
+    if (dist < threshold) {
+      const finalDx = targetCenter.x - camDrag.originCenterX;
+      const finalDy = targetCenter.y - camDrag.originCenterY;
+      camera.style.transform = `translate(calc(-50% + ${finalDx}px), calc(-50% + ${finalDy}px))`;
+      setTimeout(() => {
+        camera.style.pointerEvents = "none";
+        takePhoto();
+      }, 300);
+    } else {
+      camera.style.transform = "translate(-50%, -50%)";
+      setTimeout(() => {
+        camera.classList.remove("dragging");
+      }, 300);
+    }
+    camDrag = null;
+  }
+
+  camera.addEventListener("pointerup", endCamDrag);
+  camera.addEventListener("pointercancel", endCamDrag);
 }
 
 function buildCardElement(card, index) {
@@ -212,6 +318,8 @@ function buildCardElement(card, index) {
     // Height) if initialized immediately.
     if (card.clue && card.clue.drag) {
       attachDragClue(el, card.clue);
+    } else if (card.clue && card.clue.photoShoot) {
+      attachPhotoShootClue(el, card.clue);
     } else if (card.clue && card.clue.hotspot) {
       attachHotspotClue(el, card.clue);
     } else if (card.clue && card.clue.pos) {

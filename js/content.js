@@ -3,15 +3,24 @@
 // 环球影城 / 长城. No caption text for now (`story`/`detail` left empty —
 // card-text-overlay simply doesn't render when there's nothing to show).
 //
-// Pages 5 (beihai-park, camera clue) and 6 (provence-garden, bracelet
-// clue) are still paused pending separated elements. Page 1 (strawberry)
-// is live: `clue.drag` places a separately-provided strawberry and basket
-// on top of the scene — drag the strawberry into the basket (positioned
-// over the girl's hand) to collect it. One successful drag is enough, no
-// need to "fill" the basket. Positions are {x, y} percentages of the
-// card's own size, picked by eye from the photo; sizes are percentages
-// of the card's width (images are square with transparent padding, so
-// the drawn object reads smaller than the box).
+// Page 6 (provence-garden, bracelet clue) is still paused pending
+// separated elements.
+//
+// Page 1 (strawberry): `clue.drag` places a separately-provided
+// strawberry and basket on top of the scene — drag the strawberry into
+// the basket (positioned over the girl's hand) to collect it. One
+// successful drag is enough, no need to "fill" the basket.
+//
+// Page 5 (beihai-park): `clue.photoShoot` places a draggable camera in
+// the corner — drag it up in front of her to "take the photo": a shutter
+// flash plays, the background photo swaps to `blinkPhoto` for a beat
+// (a same-composition photo the user provided with her eyes closed) then
+// back to the normal photo, and the camera settles near her face.
+//
+// All positions are {x, y} percentages of the card's own size, picked by
+// eye from the photo; sizes are percentages of the card's width (the
+// item images are square with transparent padding, so the drawn object
+// reads smaller than the box).
 //
 // `effect` gives the other five pages some ambient motion (see
 // js/ambientEffects.js) without needing separated art — chosen per scene
@@ -47,7 +56,24 @@ export const memoryNodes = [
   { id: "node-2", photos: ["assets/images/scenes/riverside.jpg"], story: "", detail: "", effect: "rain-fireworks" },
   { id: "node-3", photos: ["assets/images/scenes/mcdonalds.jpg"], story: "", detail: "", effect: "twinkle-chase" },
   { id: "node-4", photos: ["assets/images/scenes/forbidden-city.jpg"], story: "", detail: "", effect: "petals-pink" },
-  { id: "node-5", photos: ["assets/images/scenes/beihai-park.jpg"], story: "", detail: "" },
+  {
+    id: "node-5",
+    photos: ["assets/images/scenes/beihai-park.jpg"],
+    story: "",
+    detail: "",
+    clue: {
+      id: "clue-camera",
+      photoShoot: {
+        cameraIcon: "assets/images/clues/camera-item.png",
+        cameraPos: { x: "82%", y: "90%" },
+        cameraSize: "16%",
+        targetPos: { x: "57%", y: "49%" },
+        targetRadius: "16%",
+        normalPhoto: "assets/images/scenes/beihai-park.jpg",
+        blinkPhoto: "assets/images/scenes/beihai-park-blink.jpg",
+      },
+    },
+  },
   { id: "node-6", photos: ["assets/images/scenes/provence-garden.jpg"], story: "", detail: "" },
   { id: "node-7", photos: ["assets/images/scenes/universal-studios.jpg"], story: "", detail: "", effect: "glow-pulse" },
   { id: "node-8", photos: ["assets/images/scenes/great-wall.jpg"], story: "", detail: "", effect: "petals-gold" },
@@ -64,8 +90,8 @@ export const letterParagraphs = [
 // gets a `hotspot` + `target` (see main.js's attachHotspotClue) or `pos`
 // and is wired back into cardSequence.js's card-attachment logic.
 export const giftClues = [
-  { id: "clue-camera", icon: "assets/images/clue-camera.svg" },
-  { id: "clue-mirror", icon: "assets/images/clue-strawberry.svg" },
+  { id: "clue-camera", icon: "assets/images/clues/camera-item.png" },
+  { id: "clue-mirror", icon: "assets/images/clues/strawberry-item.png" },
   { id: "clue-necklace", icon: "assets/images/clue-bouquet.svg" },
 ];
 

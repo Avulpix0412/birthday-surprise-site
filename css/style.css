@@ -418,6 +418,32 @@ html, body {
   filter: drop-shadow(0 10px 18px rgba(74, 51, 44, 0.5));
 }
 
+/* Camera-shutter flash — a quick white flash covering the whole card,
+   timed to mask the moment the background photo swaps to the
+   eyes-closed version underneath it. */
+.shutter-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  animation: shutterFlash 0.6s ease-out forwards;
+}
+
+@keyframes shutterFlash {
+  0% { opacity: 0; }
+  12% { opacity: 0.95; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shutter-flash {
+    animation: none;
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .drag-item {
     animation: none;
