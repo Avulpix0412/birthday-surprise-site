@@ -569,27 +569,6 @@ html, body {
   display: none;
 }
 
-/* Journey path mini-map, echoing the reference site's winding week-map. */
-#path-map {
-  position: fixed;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-  width: min(90vw, 420px);
-  height: 36px;
-  pointer-events: none;
-}
-
-#path-map circle {
-  transition: r 0.25s ease, opacity 0.25s ease;
-  opacity: 0.45;
-}
-
-#path-map circle.current {
-  opacity: 1;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .card {
     transition: none;

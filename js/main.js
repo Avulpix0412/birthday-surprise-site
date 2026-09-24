@@ -1,7 +1,6 @@
 import { memoryNodes, letterParagraphs, giftText, giftClues, songPath } from "./content.js";
 import { buildCardSequence } from "./cardSequence.js";
 import { decideSwipe } from "./swipeDecision.js";
-import { computePathPositions } from "./pathMap.js";
 import { buildLetterHTML, buildGiftHTML, triggerConfettiOnce } from "./reveal.js";
 import { buildTrayState, pickNudgeMessage } from "./collectibles.js";
 import { armAudioOnFirstGesture } from "./audio.js";
@@ -145,18 +144,6 @@ const cardEls = cards.map((card, i) => {
   return el;
 });
 
-function renderPathMap() {
-  const svg = document.getElementById("path-map");
-  const points = computePathPositions(cards.length, 400, 40);
-  const pathD = points.map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`)).join(" ");
-  const circles = points.map((p, i) => {
-    const r = i === currentIndex ? 6 : 4;
-    const cls = i === currentIndex ? "current" : "";
-    return `<circle cx="${p.x}" cy="${p.y}" r="${r}" fill="var(--${cards[i].accent})" class="${cls}"></circle>`;
-  }).join("");
-  svg.innerHTML = `<path d="${pathD}" fill="none" stroke="var(--text-lt)" stroke-width="1.5" opacity="0.4"></path>${circles}`;
-}
-
 function activateCard(index) {
   const card = cards[index];
   if (card.kind === "gift") {
@@ -202,7 +189,6 @@ function goTo(newIndex, direction) {
   });
 
   currentIndex = newIndex;
-  renderPathMap();
   activateCard(currentIndex);
 }
 
@@ -250,6 +236,5 @@ document.getElementById("start-btn").addEventListener("click", () => {
   document.getElementById("cover").hidden = true;
   stack.hidden = false;
   audioToggle.hidden = false;
-  renderPathMap();
   activateCard(0);
 }, { once: true });
