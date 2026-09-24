@@ -35,7 +35,7 @@ function applyChapterTheme(chapter) {
 function collectClue(clueId, clueEl) {
   if (collectedClueIds.includes(clueId)) return;
   collectedClueIds.push(clueId);
-  clueEl.classList.add("collected");
+  if (clueEl) clueEl.classList.add("collected");
   renderTray();
 }
 
@@ -65,6 +65,48 @@ function showNudge(missedClueId) {
   }
 }
 
+// For a clue that's already painted into the scene (e.g. one of the many
+// strawberries in strawberry-farm.jpg): an invisible tap target sits right
+// on top of it, and tapping flies a small copy of the clue icon from that
+// spot to wherever it "belongs" in the same picture (here, the basket
+// already drawn in it) before it joins the tray — the artwork itself
+// can't be edited, but the pick-up motion sells the interaction.
+function attachHotspotClue(hostEl, clue) {
+  const hotspot = document.createElement("button");
+  hotspot.className = "clue-hotspot";
+  hotspot.style.left = clue.hotspot.x;
+  hotspot.style.top = clue.hotspot.y;
+  hotspot.setAttribute("aria-label", "线索");
+  hostEl.appendChild(hotspot);
+
+  hotspot.addEventListener("click", () => {
+    const hostRect = hostEl.getBoundingClientRect();
+    const startX = (parseFloat(clue.hotspot.x) / 100) * hostRect.width;
+    const startY = (parseFloat(clue.hotspot.y) / 100) * hostRect.height;
+    const endX = (parseFloat(clue.target.x) / 100) * hostRect.width;
+    const endY = (parseFloat(clue.target.y) / 100) * hostRect.height;
+
+    const flyer = document.createElement("img");
+    flyer.src = clue.icon;
+    flyer.className = "flying-clue";
+    flyer.style.left = `${startX}px`;
+    flyer.style.top = `${startY}px`;
+    hostEl.appendChild(flyer);
+    hotspot.remove();
+
+    requestAnimationFrame(() => {
+      const dx = endX - startX;
+      const dy = endY - startY;
+      flyer.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.3)`;
+      flyer.style.opacity = "0";
+    });
+    flyer.addEventListener("transitionend", () => {
+      flyer.remove();
+      collectClue(clue.id);
+    }, { once: true });
+  }, { once: true });
+}
+
 function buildCardElement(card, index) {
   const el = document.createElement("div");
   el.className = "card";
@@ -78,7 +120,9 @@ function buildCardElement(card, index) {
       <div class="card-text-overlay"><p class="card-story">${card.text}</p></div>
     `;
     if (card.eggText) attachEgg(el, card.eggText);
-    if (card.clue) {
+    if (card.clue && card.clue.hotspot) {
+      attachHotspotClue(el, card.clue);
+    } else if (card.clue) {
       const clueBtn = document.createElement("button");
       clueBtn.className = `clue-item pos-${card.clue.pos}`;
       clueBtn.innerHTML = `<img src="${card.clue.icon}" alt="线索">`;

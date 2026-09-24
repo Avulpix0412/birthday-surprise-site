@@ -13,7 +13,7 @@ export const memoryNodes = [
   { id: "node-2", photos: ["assets/images/placeholder-storybook/PeterRabbit6.jpg"], story: "占位故事文字 2。", detail: "占位小细节 2。" },
   { id: "node-3", photos: ["assets/images/placeholder-storybook/PeterRabbit8.jpg"], story: "占位故事文字 3。", detail: "占位小细节 3。" },
   { id: "node-4", photos: ["assets/images/placeholder-storybook/PeterRabbit12.jpg"], story: "占位故事文字 4。", detail: "占位小细节 4。" },
-  { id: "node-5", photos: ["assets/images/placeholder-storybook/PeterRabbit15.jpg"], story: "占位故事文字 5。", detail: "占位小细节 5。" },
+  { id: "node-5", photos: ["assets/images/scenes/strawberry-farm.jpg"], story: "占位故事文字 5。", detail: "占位小细节 5。" },
   { id: "node-6", photos: ["assets/images/placeholder-storybook/PeterRabbit4.jpg"], story: "占位故事文字 6。", detail: "占位小细节 6。" },
   { id: "node-7", photos: ["assets/images/placeholder-storybook/PeterRabbit6.jpg"], story: "占位故事文字 7。", detail: "占位小细节 7。" },
   { id: "node-8", photos: ["assets/images/placeholder-storybook/PeterRabbit8.jpg"], story: "占位故事文字 8。", detail: "占位小细节 8。" },
@@ -38,15 +38,27 @@ export const letterParagraphs = [
   "占位情书文字第三段。",
 ];
 
-// Gift clues: small collectible objects that appear on specific memory
-// cards along the way, echoing a real gift's look/colors without naming
-// or showing the gift itself. Swap `icon` for a real image path any time.
-// `pos` varies where it sits on the card (see .clue-item.pos-* in
-// style.css) so hunting for it doesn't always mean checking the same
-// corner.
+// Gift clues: small collectible objects tied to specific memory cards,
+// echoing a real gift's look/colors without naming or showing the gift
+// itself.
+//
+// Two ways a clue can sit on its card:
+// - `pos` (top-right/bottom-left/mid-right): a small floating icon in a
+//   corner, for cards whose photo doesn't already contain the object.
+// - `hotspot` + `target`: the object is *already part of the scene*
+//   (e.g. one of the many strawberries painted into strawberry-farm.jpg).
+//   `hotspot` is where to place an invisible tap target over it;
+//   `target` is where the picked object should fly to (here, the boy's
+//   basket already drawn in the same picture) before joining the tray.
+//   Both are {x, y} percentages of the card's own size.
 export const giftClues = [
   { id: "clue-camera", icon: "assets/images/clue-camera.svg", pos: "top-right" },
-  { id: "clue-mirror", icon: "assets/images/clue-strawberry.svg", pos: "bottom-left" },
+  {
+    id: "clue-mirror",
+    icon: "assets/images/clue-strawberry.svg",
+    hotspot: { x: "12%", y: "84%" },
+    target: { x: "47%", y: "35%" },
+  },
   { id: "clue-necklace", icon: "assets/images/clue-bouquet.svg", pos: "mid-right" },
 ];
 
