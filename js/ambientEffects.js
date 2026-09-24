@@ -19,6 +19,10 @@ export function sparkleProgress(elapsedInCycle, durationMs) {
   return (elapsedInCycle % durationMs) / durationMs;
 }
 
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
 function resizeCanvas(canvas) {
   const dpr = window.devicePixelRatio || 1;
   const w = canvas.clientWidth;
@@ -30,9 +34,8 @@ function resizeCanvas(canvas) {
   return { ctx, w, h };
 }
 
-// Soft drifting gold bokeh dust, layered under every effect for a shared
-// "dreamy" quality rather than each effect feeling like an isolated
-// gimmick. Slow upward drift + gentle side-to-side sway + a glow.
+// Soft drifting gold bokeh dust, layered under several effects for a
+// shared "dreamy" quality.
 function drawDust(ctx, w, h, t, dust) {
   dust.forEach((p) => {
     const y = h - rainDropY(t, p.phase, p.speed, h + 40);
@@ -48,6 +51,16 @@ function drawDust(ctx, w, h, t, dust) {
   });
   ctx.shadowBlur = 0;
   ctx.globalAlpha = 1;
+}
+
+function makeDust(w, h, count) {
+  return Array.from({ length: count }, () => ({
+    x: Math.random() * w,
+    r: 1.5 + Math.random() * 2.5,
+    phase: Math.random() * 1000,
+    sway: Math.random() * Math.PI * 2,
+    speed: 0.012 + Math.random() * 0.018,
+  }));
 }
 
 function drawRainFireworks(ctx, w, h, t, state) {
@@ -99,44 +112,66 @@ function drawRainFireworks(ctx, w, h, t, state) {
   });
 }
 
-function drawTwinkle(ctx, w, h, t, state) {
+// Lights placed along the two tree-canopy arcs actually painted in the
+// McDonald's-bench scene (converging from the bottom corners toward the
+// top center), with a traveling-wave twinkle instead of independent
+// random flicker — reads as "these specific string lights are chasing",
+// not "random new dots appeared over the picture".
+function drawTwinkleChase(ctx, w, h, t, state) {
   ctx.clearRect(0, 0, w, h);
-  state.stars.forEach((s) => {
-    const a = twinkleAlpha(t, s.phase, s.speed);
-    const wobbleX = s.x + Math.sin(t * 0.0004 + s.phase) * 6;
-    const wobbleY = s.y + Math.cos(t * 0.0003 + s.phase) * 4;
+  state.lights.forEach((l) => {
+    const a = twinkleAlpha(t, l.posRatio * 9, 1.4);
     ctx.globalAlpha = 0.35 + a * 0.65;
-    ctx.shadowBlur = 14 + a * 10;
+    ctx.shadowBlur = 16 + a * 8;
     ctx.shadowColor = "rgba(255, 244, 200, 0.95)";
-    ctx.fillStyle = "#fffae6";
+    ctx.fillStyle = "#fff7dc";
     ctx.beginPath();
-    ctx.arc(wobbleX, wobbleY, s.r + a * 1.5, 0, Math.PI * 2);
+    ctx.arc(l.x, l.y, l.r + a * 2, 0, Math.PI * 2);
     ctx.fill();
   });
   ctx.shadowBlur = 0;
   ctx.globalAlpha = 1;
-}
-
-function drawDriftClouds(ctx, w, h, t, state) {
-  ctx.clearRect(0, 0, w, h);
-  state.clouds.forEach((c) => {
-    const x = cloudOffsetX(t + c.phase, c.speed, w + 300) - 150;
-    ctx.globalAlpha = c.alpha;
-    ctx.shadowBlur = 30;
-    ctx.shadowColor = "rgba(255, 255, 255, 0.9)";
-    ctx.fillStyle = "#ffffff";
-    ctx.beginPath();
-    ctx.ellipse(x, c.y, c.rx, c.ry, 0, 0, Math.PI * 2);
-    ctx.fill();
-  });
-  ctx.shadowBlur = 0;
-  ctx.globalAlpha = 1;
-
   drawDust(ctx, w, h, t, state.dust);
 }
 
-function drawSparkleBurst(ctx, w, h, t, state) {
+// Petals/leaves drifting straight down across the whole frame — much
+// higher contrast against a photo than another translucent cloud/star,
+// and plausible as atmosphere in any outdoor scene rather than a
+// disconnected overlay.
+function drawFalling(ctx, w, h, t, state) {
   ctx.clearRect(0, 0, w, h);
+  state.petals.forEach((p) => {
+    const y = rainDropY(t, p.phase, p.speed, h + 60) - 40;
+    const x = p.x + Math.sin(t * 0.0009 + p.sway) * 26;
+    const rot = t * p.rotSpeed + p.rot0;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rot);
+    ctx.globalAlpha = 0.75;
+    ctx.shadowBlur = 6;
+    ctx.shadowColor = p.color;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, p.r, p.r * 0.6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+  ctx.shadowBlur = 0;
+  ctx.globalAlpha = 1;
+}
+
+function drawGlowPulse(ctx, w, h, t, state) {
+  ctx.clearRect(0, 0, w, h);
+  const a = twinkleAlpha(t, 0, 0.7);
+  const r = state.baseR * (0.8 + a * 0.4);
+  const grad = ctx.createRadialGradient(state.cx, state.cy, 0, state.cx, state.cy, r);
+  grad.addColorStop(0, `rgba(196, 150, 255, ${0.32 + a * 0.28})`);
+  grad.addColorStop(1, "rgba(196, 150, 255, 0)");
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(state.cx, state.cy, r, 0, Math.PI * 2);
+  ctx.fill();
+
   state.sparkles.forEach((s) => {
     const progress = sparkleProgress(t + s.phase, s.duration);
     const alpha = progress < 0.5 ? progress * 2 : (1 - progress) * 2;
@@ -159,17 +194,34 @@ function drawSparkleBurst(ctx, w, h, t, state) {
   });
   ctx.shadowBlur = 0;
   ctx.globalAlpha = 1;
-
-  drawDust(ctx, w, h, t, state.dust);
 }
 
-function makeDust(w, h, count) {
-  return Array.from({ length: count }, () => ({
+const PETAL_COLORS_PINK = ["#f6a8c4", "#f6c3d6", "#f291b0"];
+const PETAL_COLORS_GOLD = ["#d9c15a", "#a9c47a", "#e0b45a"];
+
+function makeArcLights(w, h) {
+  const count = 16;
+  const leftArc = Array.from({ length: count }, (_, i) => {
+    const p = i / (count - 1);
+    return { x: lerp(0, w * 0.42, p), y: lerp(h * 0.5, h * 0.04, p), posRatio: p, r: 2.5 + Math.random() * 2 };
+  });
+  const rightArc = Array.from({ length: count }, (_, i) => {
+    const p = i / (count - 1);
+    return { x: lerp(w, w * 0.58, p), y: lerp(h * 0.5, h * 0.04, p), posRatio: 1 - p, r: 2.5 + Math.random() * 2 };
+  });
+  return leftArc.concat(rightArc);
+}
+
+function makePetals(w, h, colors) {
+  return Array.from({ length: 24 }, () => ({
     x: Math.random() * w,
-    r: 1.5 + Math.random() * 2.5,
-    phase: Math.random() * 1000,
+    phase: Math.random() * h,
+    speed: 0.05 + Math.random() * 0.05,
     sway: Math.random() * Math.PI * 2,
-    speed: 0.012 + Math.random() * 0.018,
+    r: 6 + Math.random() * 6,
+    rot0: Math.random() * Math.PI * 2,
+    rotSpeed: (Math.random() - 0.5) * 0.0015,
+    color: colors[Math.floor(Math.random() * colors.length)],
   }));
 }
 
@@ -187,43 +239,34 @@ const EFFECTS = {
     }),
     draw: drawRainFireworks,
   },
-  twinkle: {
+  "twinkle-chase": {
     init: (w, h) => ({
-      stars: Array.from({ length: 38 }, () => ({
-        x: Math.random() * w,
-        y: Math.random() * h * 0.65,
-        r: 1.5 + Math.random() * 2.5,
-        phase: Math.random() * Math.PI * 2,
-        speed: 0.5 + Math.random() * 1.5,
-      })),
+      lights: makeArcLights(w, h),
+      dust: makeDust(w, h, 10),
     }),
-    draw: drawTwinkle,
+    draw: drawTwinkleChase,
   },
-  "drift-clouds": {
-    init: (w, h) => ({
-      clouds: Array.from({ length: 4 }, (_, i) => ({
-        y: h * (0.05 + i * 0.045),
-        rx: 65 + Math.random() * 50,
-        ry: 18 + Math.random() * 10,
-        speed: 0.028 + Math.random() * 0.02,
-        phase: Math.random() * 5000,
-        alpha: 0.55 + Math.random() * 0.25,
-      })),
-      dust: makeDust(w, h, 14),
-    }),
-    draw: drawDriftClouds,
+  "petals-pink": {
+    init: (w, h) => ({ petals: makePetals(w, h, PETAL_COLORS_PINK) }),
+    draw: drawFalling,
   },
-  "sparkle-burst": {
+  "petals-gold": {
+    init: (w, h) => ({ petals: makePetals(w, h, PETAL_COLORS_GOLD) }),
+    draw: drawFalling,
+  },
+  "glow-pulse": {
     init: (w, h) => ({
-      sparkles: Array.from({ length: 22 }, () => ({
+      cx: w * 0.58,
+      cy: h * 0.33,
+      baseR: Math.min(w, h) * 0.26,
+      sparkles: Array.from({ length: 16 }, () => ({
         x: Math.random() * w,
         y: Math.random() * h * 0.65,
         duration: 1200 + Math.random() * 1100,
         phase: Math.random() * 3000,
       })),
-      dust: makeDust(w, h, 14),
     }),
-    draw: drawSparkleBurst,
+    draw: drawGlowPulse,
   },
 };
 
