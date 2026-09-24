@@ -1,3 +1,23 @@
+/* 江城圆体 (Jiangcheng Yuanti) — a genuinely rounded Chinese picture-book
+   face, OFL-1.1 licensed (free for commercial use, redistribution
+   permitted). Subset to only this site's actual text via
+   scripts/subset-font.sh — the full font is ~14MB per weight; run that
+   script again after adding new Chinese text anywhere in the site,
+   otherwise new characters silently fall back to Yuanti SC. */
+@font-face {
+  font-family: "Jiangcheng Yuanti";
+  src: url("../assets/fonts/jiangcheng-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Jiangcheng Yuanti";
+  src: url("../assets/fonts/jiangcheng-700.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
 :root {
   --bg: #fbf1e6;
   --text: #4a332c;
@@ -18,13 +38,12 @@
   --glass-blur: blur(30px) saturate(180%);
   --card-shadow: 0 24px 60px -22px rgba(74, 51, 44, 0.32), 0 3px 16px rgba(74, 51, 44, 0.1);
 
-  /* Children's-picture-book redesign: round and soft everywhere, not the
-     earlier elegant-serif titling — Yuanti SC (苹方系统自带的"圆体") is the
-     one built-in iOS/macOS Chinese face that's actually rounded, unlike
-     PingFang/Heiti's straight terminals. */
-  --font-hand: "Yuanti SC", "PingFang SC", "Heiti SC", sans-serif;
-  --font-body: "Yuanti SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-  --font-display: "Yuanti SC", "PingFang SC", "Heiti SC", sans-serif;
+  /* Children's-picture-book redesign: round and soft everywhere. Jiangcheng
+     Yuanti (above) is noticeably rounder than Yuanti SC, the built-in
+     iOS/macOS fallback used while it loads (or if it fails to load). */
+  --font-hand: "Jiangcheng Yuanti", "Yuanti SC", "PingFang SC", "Heiti SC", sans-serif;
+  --font-body: "Jiangcheng Yuanti", "Yuanti SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-display: "Jiangcheng Yuanti", "Yuanti SC", "PingFang SC", "Heiti SC", sans-serif;
 
   color-scheme: light;
 }
@@ -235,13 +254,15 @@ html, body {
   font-size: 1.2rem;
   font-weight: 600;
   line-height: 1.6;
-  /* Warm ink brown, the same tone the rest of the site's own text uses —
-     reads as lettering drawn into the scene rather than a pale UI
-     caption. A soft light halo (not a dark drop-shadow) keeps it legible
-     over darker patches of a photo without needing the scrim to do all
-     the work. */
-  color: #4a2f1f;
-  text-shadow: 0 1px 2px rgba(255, 250, 240, 0.75), 0 0 14px rgba(255, 250, 240, 0.55);
+  /* Warm ink brown reads as lettering drawn into the scene rather than a
+     pale UI caption — but a soft glow alone wasn't reliably legible
+     against every part of a real photo. A solid light outline (a
+     "sticker" stroke, common in real picture-book digital lettering)
+     guarantees contrast against any background color underneath. */
+  color: #3a2415;
+  -webkit-text-stroke: 3px rgba(255, 250, 240, 0.92);
+  paint-order: stroke fill;
+  text-shadow: 0 2px 6px rgba(58, 38, 28, 0.3);
   margin: 0;
 }
 
@@ -272,7 +293,9 @@ html, body {
      the emphasis color changes with each page instead of always
      matching whichever page it was first tuned against. */
   color: color-mix(in srgb, var(--card-accent, var(--rose)) 75%, #2e1c10);
-  text-shadow: 0 1px 2px rgba(255, 250, 240, 0.85), 0 0 16px rgba(255, 250, 240, 0.65);
+  -webkit-text-stroke: 4px rgba(255, 250, 240, 0.92);
+  paint-order: stroke fill;
+  text-shadow: 0 2px 6px rgba(58, 38, 28, 0.3);
 }
 
 .card-glass {
