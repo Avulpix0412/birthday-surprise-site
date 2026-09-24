@@ -102,12 +102,12 @@ export const memoryNodes = [
         // scene already has matching flowers/fruit, so each pick reads
         // as "gathering what's already growing here".
         items: [
-          { icon: "assets/images/clues/garden-item-1.png", pos: { x: "12%", y: "8%" }, size: "22%" },
-          { icon: "assets/images/clues/garden-item-2.png", pos: { x: "88%", y: "37%" }, size: "18%" },
-          { icon: "assets/images/clues/garden-item-3.png", pos: { x: "8%", y: "58%" }, size: "20%" },
-          { icon: "assets/images/clues/garden-item-4.png", pos: { x: "80%", y: "88%" }, size: "20%" },
-          { icon: "assets/images/clues/garden-item-5.png", pos: { x: "45%", y: "9%" }, size: "18%" },
-          { icon: "assets/images/clues/garden-item-6.png", pos: { x: "88%", y: "52%" }, size: "18%" },
+          { icon: "assets/images/clues/garden-item-1.png", pos: { x: "16%", y: "10%" }, size: "22%" },
+          { icon: "assets/images/clues/garden-item-2.png", pos: { x: "84%", y: "38%" }, size: "18%" },
+          { icon: "assets/images/clues/garden-item-3.png", pos: { x: "13%", y: "58%" }, size: "20%" },
+          { icon: "assets/images/clues/garden-item-4.png", pos: { x: "78%", y: "86%" }, size: "20%" },
+          { icon: "assets/images/clues/garden-item-5.png", pos: { x: "45%", y: "12%" }, size: "18%" },
+          { icon: "assets/images/clues/garden-item-6.png", pos: { x: "84%", y: "53%" }, size: "18%" },
         ],
         resultImage: "assets/images/clues/bouquet-full.png",
       },

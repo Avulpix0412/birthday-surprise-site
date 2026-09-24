@@ -470,23 +470,25 @@ html, body {
   animation: bouquetItemBob 2.6s ease-in-out infinite, bouquetItemGlow 2.2s ease-in-out infinite;
 }
 
-/* A soft white halo behind each sprig — the scene is already dense with
-   matching real flowers, so a directional drop-shadow alone (see
-   bouquetItemGlow) isn't enough contrast; a broad radial wash reads
-   against any hue underneath. */
+/* A high-contrast cyan halo behind each sprig — the garden is entirely
+   warm tones (orange/yellow/pink/green), so a white glow still blended
+   into the many pale petals and sky. Cyan is the one hue absent from the
+   whole scene, plus a dark ring for a second layer of contrast on the
+   brightest patches — same two-layer trick as the camera page's aim-ring. */
 .bouquet-item::before {
   content: "";
   position: absolute;
-  inset: -45%;
+  inset: -18%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 68%);
+  background: radial-gradient(circle, rgba(64, 224, 255, 0.9) 0%, rgba(64, 224, 255, 0.45) 55%, rgba(64, 224, 255, 0) 75%);
+  box-shadow: 0 0 0 2px rgba(20, 60, 70, 0.4);
   z-index: -1;
   animation: bouquetHalo 2.2s ease-in-out infinite;
 }
 
 @keyframes bouquetHalo {
-  0%, 100% { opacity: 0.5; transform: scale(0.88); }
-  50% { opacity: 0.95; transform: scale(1.18); }
+  0%, 100% { opacity: 0.6; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.15); }
 }
 
 .bouquet-item img {
