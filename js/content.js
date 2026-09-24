@@ -106,7 +106,10 @@ export const memoryNodes = [
           { icon: "assets/images/clues/garden-item-2.png", pos: { x: "84%", y: "38%" }, size: "18%" },
           { icon: "assets/images/clues/garden-item-3.png", pos: { x: "13%", y: "58%" }, size: "20%" },
           { icon: "assets/images/clues/garden-item-4.png", pos: { x: "78%", y: "86%" }, size: "20%" },
-          { icon: "assets/images/clues/garden-item-5.png", pos: { x: "45%", y: "12%" }, size: "18%" },
+          // Was x:45%,y:12% — sat almost directly under the fixed
+          // collection tray (which is centered, top:56px), so it was
+          // mostly hidden behind it. Moved clear of the tray's zone.
+          { icon: "assets/images/clues/garden-item-5.png", pos: { x: "30%", y: "20%" }, size: "18%" },
           { icon: "assets/images/clues/garden-item-6.png", pos: { x: "84%", y: "53%" }, size: "18%" },
         ],
         resultImage: "assets/images/clues/bouquet-full.png",
