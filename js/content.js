@@ -119,8 +119,19 @@ export const memoryNodes = [
   {
     id: "node-5",
     photos: ["assets/images/scenes/beihai-park.jpg"],
-    story: "",
+    // Formatting only, not wording, was trimmed here — the first draft's
+    // extra <br> line-breaks plus a block-level e2 span pushed the text
+    // down far enough to cover the frame's own "北海公园" title and reach
+    // her hair. All inline emphasis instead, one fewer forced line break.
+    story:
+      "到公园之后好像有一点不愉快，原因记不清，<span class=\"e1\">因为很快就和好了</span>。<br>" +
+      "看着远处的白塔和荡漾的湖面，牵着手和你一起<span class=\"e1\">漫无目的地散步</span>。<br>" +
+      "没有城市的喧嚣和烦恼，只有郁郁葱葱和放松愉悦。<br>" +
+      "微风拂过，思绪又不知飘去了哪里……",
     detail: "",
+    // The willow tree/sky above her clears both the aim-ring (60%) and
+    // the camera's rest spot (88%) by a wide margin.
+    textPos: "top",
     clue: {
       id: "clue-camera",
       photoShoot: {
@@ -144,7 +155,16 @@ export const memoryNodes = [
   {
     id: "node-6",
     photos: ["assets/images/scenes/provence-garden.jpg"],
-    story: "",
+    // Short and placed at the bottom — the top/sides are already dense
+    // with the six pickable sprigs (see clue.bouquet.items below), so
+    // this is the one page using the default bottom position instead of
+    // "top". Checked against item 4 (the only item sharing this band)
+    // via real rendered bounding boxes, not just eyeballed.
+    story:
+      "你点名要去的植物园。在五彩缤纷花朵衬托下的窈窕淑女，<br>" +
+      "你的<span class=\"e1\">一颦一笑</span>都令我心动……<br>" +
+      "这个场景让我想起一句应景的诗：<br>" +
+      "<span class=\"e1\">取次花丛懒回顾，半缘修道半缘君。</span>",
     detail: "",
     clue: {
       id: "clue-bouquet",
@@ -157,7 +177,14 @@ export const memoryNodes = [
           { icon: "assets/images/clues/garden-item-1.png", pos: { x: "16%", y: "10%" }, size: "22%" },
           { icon: "assets/images/clues/garden-item-2.png", pos: { x: "84%", y: "38%" }, size: "18%" },
           { icon: "assets/images/clues/garden-item-3.png", pos: { x: "13%", y: "58%" }, size: "20%" },
-          { icon: "assets/images/clues/garden-item-4.png", pos: { x: "78%", y: "86%" }, size: "20%" },
+          // Was x:78%,y:86%, then x:82%,y:68% — both still fell inside
+          // the bottom text band once the story text grew (a wide line
+          // rendered right through it either way, since long left-aligned
+          // lines reach past x:70%). The right column (items 2 and 6) had
+          // no free gap left either, so this moved to the left side
+          // instead, in the open gap between items 1 and 3, clear of both
+          // her figure and the text band.
+          { icon: "assets/images/clues/garden-item-4.png", pos: { x: "13%", y: "40%" }, size: "20%" },
           // Was x:45%,y:12% — sat almost directly under the fixed
           // collection tray (which is centered, top:56px), so it was
           // mostly hidden behind it. Moved clear of the tray's zone.
@@ -168,8 +195,33 @@ export const memoryNodes = [
       },
     },
   },
-  { id: "node-7", photos: ["assets/images/scenes/universal-studios.jpg"], story: "", detail: "", effect: "glow-pulse" },
-  { id: "node-8", photos: ["assets/images/scenes/great-wall.jpg"], story: "", detail: "", effect: "petals-gold" },
+  {
+    id: "node-7",
+    photos: ["assets/images/scenes/universal-studios.jpg"],
+    // All inline emphasis and fewer forced line breaks (formatting only,
+    // same words) — the first draft's block-level e2 span pushed the
+    // text down far enough to reach the two kids' faces.
+    story:
+      "最近一次见面，看着你从第一个项目的<span class=\"e1\">不敢睁眼</span>到最后一个项目的<span class=\"e1\">意犹未尽</span>。<br>" +
+      "<span class=\"e1\">过山车在空中飞驰</span>，把一切烦恼都扫掉，你收获了成长，<br>" +
+      "但在我的身边，你是否会多一点安全感呢？",
+    detail: "",
+    // Open sky is upper-left; the coaster structure and the glow-pulse
+    // effect (centered lower-right at 58%/33%) both sit clear of it.
+    textPos: "top",
+    effect: "glow-pulse",
+  },
+  {
+    id: "node-8",
+    photos: ["assets/images/scenes/great-wall.jpg"],
+    story:
+      "和你一起挑战了自我，<span class=\"e1\">早起开车，坐缆车，爬长城</span>。<br>" +
+      "看着人类的奇迹和大自然的鬼斧神工，<br>" +
+      "最安心的莫过于<span class=\"e2\">有彼此在身边陪伴</span>了吧……",
+    detail: "",
+    textPos: "top",
+    effect: "petals-gold",
+  },
 ];
 
 export const letterParagraphs = [
