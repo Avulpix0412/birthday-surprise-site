@@ -46,8 +46,18 @@ export const memoryNodes = [
   {
     id: "node-1",
     photos: ["assets/images/scenes/strawberry-farm.jpg"],
-    story: "",
+    // Sized to a short emphasis phrase each (Chinese characters run much
+    // wider than Latin letters at the same font-size, so e2/e3 — built
+    // for short punchlines — would overflow a narrow phone if wrapped
+    // around a whole clause instead of just its 5-6 character peak).
+    story:
+      "我们的第一次活动，是你听到我也想摘草莓，<span class=\"e2\">然后带我实现。</span><br>" +
+      "当时的我很紧张，但又很幸福，白色的草莓<span class=\"e3\">纯洁又甜蜜</span>，就像我们两个一样。",
     detail: "",
+    // Both interactive elements (the strawberry and the basket) sit in
+    // the lower half of the photo — text goes up top, over the open
+    // greenhouse sky, so it never covers them.
+    textPos: "top",
     clue: {
       id: "clue-mirror",
       drag: {

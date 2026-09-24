@@ -18,16 +18,13 @@
   --glass-blur: blur(30px) saturate(180%);
   --card-shadow: 0 24px 60px -22px rgba(74, 51, 44, 0.32), 0 3px 16px rgba(74, 51, 44, 0.1);
 
-  /* Reference (Beanie's Bandana) uses an elegant Western serif for its
-     picture-book titling, not a rounded or brush-calligraphy face.
-     Songti is the closest Chinese equivalent in spirit: a classic serif
-     that reads as book typography rather than a UI font or hand-lettering. */
-  --font-hand: "Songti SC", "Noto Serif SC", "PingFang SC", serif;
-  --font-body: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-  /* A separate bold rounded face for buttons/CTAs and the notebook-style
-     UI — the reference never uses its narration serif for interactive
-     labels ("Who could it be?", "Submit"), only for storytelling text. */
-  --font-display: "PingFang SC", "Heiti SC", sans-serif;
+  /* Children's-picture-book redesign: round and soft everywhere, not the
+     earlier elegant-serif titling — Yuanti SC (苹方系统自带的"圆体") is the
+     one built-in iOS/macOS Chinese face that's actually rounded, unlike
+     PingFang/Heiti's straight terminals. */
+  --font-hand: "Yuanti SC", "PingFang SC", "Heiti SC", sans-serif;
+  --font-body: "Yuanti SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-display: "Yuanti SC", "PingFang SC", "Heiti SC", sans-serif;
 
   color-scheme: light;
 }
@@ -88,8 +85,19 @@ html, body {
 
 .cover-title {
   font-family: var(--font-hand);
+  font-weight: 700;
   font-size: 2rem;
   text-align: center;
+}
+
+.cover-intro {
+  font-family: var(--font-hand);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  text-align: center;
+  max-width: 340px;
+  margin-top: 16px;
+  color: var(--text);
 }
 
 /* Hand-drawn "wobbly" pill: an irregular border-radius per corner reads

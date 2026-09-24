@@ -378,7 +378,7 @@ function buildCardElement(card, index) {
     el.innerHTML = `
       <img class="card-bg-photo" src="${card.photo}" alt="回忆照片" onerror="this.classList.add('img-fallback')">
       ${card.effect ? `<canvas class="ambient-fx"></canvas>` : ""}
-      ${card.text ? `<div class="card-text-overlay"><p class="card-story">${card.text}</p></div>` : ""}
+      ${card.text ? `<div class="card-text-overlay${card.textPos === "top" ? " pos-top" : ""}"><p class="card-story">${card.text}</p></div>` : ""}
     `;
     // Deferred to first activation (see activateCard), not started here:
     // every card is built up front while #card-stack is still hidden, so

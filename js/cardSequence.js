@@ -9,6 +9,7 @@ export function buildCardSequence({ memoryNodes, letterParagraphs, giftText }) {
       const text = photoIndex === 0 ? node.story : (node.detail || "");
       const card = { kind: "memory", groupIndex, photo, text, accent, effect: node.effect };
       if (photoIndex === 0 && node.clue) card.clue = node.clue;
+      if (node.textPos) card.textPos = node.textPos;
       cards.push(card);
     });
   });

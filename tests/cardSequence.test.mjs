@@ -73,3 +73,16 @@ test("buildCardSequence carries a node's clue onto only the first of its cards",
   assert.strictEqual(memoryCards[0].clue, clue);
   assert.strictEqual(memoryCards[1].clue, undefined);
 });
+
+test("buildCardSequence carries a node's textPos onto its card(s), when present", () => {
+  const cards = buildCardSequence({
+    ...content,
+    memoryNodes: [
+      { photos: ["a.svg"], story: "s", detail: "d", textPos: "top" },
+      { photos: ["b.svg"], story: "s2", detail: "d2" },
+    ],
+  });
+  const memoryCards = cards.filter((c) => c.kind === "memory");
+  assert.strictEqual(memoryCards[0].textPos, "top");
+  assert.strictEqual(memoryCards[1].textPos, undefined);
+});
