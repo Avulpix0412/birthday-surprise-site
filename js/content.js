@@ -225,9 +225,11 @@ export const memoryNodes = [
 ];
 
 export const letterParagraphs = [
-  "占位情书文字第一段。",
-  "占位情书文字第二段。",
-  "占位情书文字第三段。",
+  "这一年我们还一起经历了很多很多的事情，上班，考试，还一起去了两场演唱会，一个是我的偶像，一个是我们两个的偶像。",
+  "回想起所有这些，仿佛已经和你认识了很久很久。",
+  "我们彼此熟悉，每次见面却总像第一次一样悸动。",
+  "我相信，现在暂时的分开是为了以后永久的相聚。",
+  "我们都会努力，直到愿望实现的那一天……",
 ];
 
 export const giftClues = [
@@ -236,6 +238,8 @@ export const giftClues = [
   { id: "clue-bouquet", icon: "assets/images/clues/bouquet-icon.png" },
 ];
 
-export const giftText = "占位礼物/旅行计划揭晓文字。";
+export const giftText =
+  "那么，在这个特别的日子，祝这个世界上最美丽，最温柔，最最可爱的张雨竹，生日快乐！<br><br>" +
+  "咦，在这次旅程中你收获了三件物品，它们分别是什么呢？";
 
 export const songPath = "assets/audio/song.mp3";

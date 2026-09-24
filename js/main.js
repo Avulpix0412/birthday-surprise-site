@@ -432,10 +432,12 @@ function activateCard(index) {
   if (card.kind === "gift") {
     const glass = cardEls[index].querySelector(".card-glass");
     const collected = buildTrayState(giftClues, collectedClueIds).filter((s) => s.collected);
+    // Icons render after the text, not before — the copy asks "what did
+    // you collect?" and then the answer appears below it.
     const recapHTML = collected.length
       ? `<div class="clue-recap">${collected.map((s) => `<img src="${s.icon}" alt="">`).join("")}</div>`
       : "";
-    glass.innerHTML = recapHTML + buildGiftHTML(card.text);
+    glass.innerHTML = buildGiftHTML(card.text) + recapHTML;
     triggerConfettiOnce(() => {
       window.confetti && window.confetti({ particleCount: 150, spread: 70 });
     });
