@@ -51,7 +51,7 @@ export const memoryNodes = [
         itemIcon: "assets/images/clues/strawberry-item.png",
         itemPos: { x: "11%", y: "72%" },
         itemSize: "13%",
-        hintText: "把这颗放到篮子里吧",
+        hintText: "把我放到篮子里吧",
         basketIcon: "assets/images/clues/basket.png",
         basketPos: { x: "88%", y: "53%" },
         basketSize: "24%",
