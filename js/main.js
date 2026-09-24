@@ -120,10 +120,20 @@ function attachDragClue(hostEl, clue) {
   item.setAttribute("alt", "线索");
   hostEl.appendChild(item);
 
+  // A one-time hint bubble, gone the instant she touches the item — she
+  // only needs telling once that it's draggable, not a permanent label.
+  const hint = document.createElement("div");
+  hint.className = "drag-hint";
+  hint.style.left = drag.itemPos.x;
+  hint.style.top = drag.itemPos.y;
+  hint.textContent = drag.hintText || "拖我到篮子里";
+  hostEl.appendChild(hint);
+
   let itemDrag = null;
 
   item.addEventListener("pointerdown", (e) => {
     e.stopPropagation(); // don't let #card-stack's swipe handler see this
+    hint.remove();
     const rect = item.getBoundingClientRect();
     itemDrag = {
       startClientX: e.clientX,
