@@ -62,3 +62,14 @@ test("buildCardSequence carries a node's ambient effect onto its card(s), when p
   assert.strictEqual(memoryCards[0].effect, "rain-fireworks");
   assert.strictEqual(memoryCards[1].effect, undefined);
 });
+
+test("buildCardSequence carries a node's clue onto only the first of its cards", () => {
+  const clue = { id: "clue-mirror", drag: { itemIcon: "x.png" } };
+  const cards = buildCardSequence({
+    ...content,
+    memoryNodes: [{ photos: ["a.svg", "b.svg"], story: "s", detail: "d", clue }],
+  });
+  const memoryCards = cards.filter((c) => c.kind === "memory");
+  assert.strictEqual(memoryCards[0].clue, clue);
+  assert.strictEqual(memoryCards[1].clue, undefined);
+});

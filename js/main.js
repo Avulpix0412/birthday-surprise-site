@@ -94,6 +94,93 @@ function attachHotspotClue(hostEl, clue) {
   }, { once: true });
 }
 
+// A clue provided as two separate elements (e.g. a strawberry + the
+// basket already in her hand in the photo): drag the item onto the
+// basket to collect it. One successful drop is enough — the item then
+// locks into the basket and stops being draggable; a missed drop snaps
+// back to its start position so the page stays completable no matter how
+// many tries it takes.
+function attachDragClue(hostEl, clue) {
+  const { drag } = clue;
+
+  const basket = document.createElement("img");
+  basket.src = drag.basketIcon;
+  basket.className = "drag-basket";
+  basket.style.left = drag.basketPos.x;
+  basket.style.top = drag.basketPos.y;
+  basket.style.width = drag.basketSize;
+  hostEl.appendChild(basket);
+
+  const item = document.createElement("img");
+  item.src = drag.itemIcon;
+  item.className = "drag-item";
+  item.style.left = drag.itemPos.x;
+  item.style.top = drag.itemPos.y;
+  item.style.width = drag.itemSize;
+  item.setAttribute("alt", "线索");
+  hostEl.appendChild(item);
+
+  let itemDrag = null;
+
+  item.addEventListener("pointerdown", (e) => {
+    e.stopPropagation(); // don't let #card-stack's swipe handler see this
+    const rect = item.getBoundingClientRect();
+    itemDrag = {
+      startClientX: e.clientX,
+      startClientY: e.clientY,
+      originCenterX: rect.left + rect.width / 2,
+      originCenterY: rect.top + rect.height / 2,
+      dx: 0,
+      dy: 0,
+    };
+    item.classList.add("dragging");
+    item.setPointerCapture(e.pointerId);
+  });
+
+  item.addEventListener("pointermove", (e) => {
+    if (!itemDrag) return;
+    e.stopPropagation();
+    itemDrag.dx = e.clientX - itemDrag.startClientX;
+    itemDrag.dy = e.clientY - itemDrag.startClientY;
+    item.style.transform = `translate(calc(-50% + ${itemDrag.dx}px), calc(-50% + ${itemDrag.dy}px))`;
+  });
+
+  function endItemDrag(e) {
+    if (!itemDrag) return;
+    e.stopPropagation();
+    // Keep .dragging (animation: none) through the settle transition below —
+    // the idle-bob keyframe would otherwise fight the transform transition
+    // for the same property, since a running CSS animation overrides even
+    // an inline style on the property it animates.
+
+    const basketRect = basket.getBoundingClientRect();
+    const basketCenter = { x: basketRect.left + basketRect.width / 2, y: basketRect.top + basketRect.height / 2 };
+    const currentCenter = { x: itemDrag.originCenterX + itemDrag.dx, y: itemDrag.originCenterY + itemDrag.dy };
+    const dist = Math.hypot(currentCenter.x - basketCenter.x, currentCenter.y - basketCenter.y);
+    const threshold = Math.max(basketRect.width, basketRect.height) * 0.6;
+
+    item.style.transition = "transform 0.3s ease";
+    if (dist < threshold) {
+      const finalDx = basketCenter.x - itemDrag.originCenterX;
+      const finalDy = basketCenter.y - itemDrag.originCenterY;
+      item.style.transform = `translate(calc(-50% + ${finalDx}px), calc(-50% + ${finalDy}px)) scale(0.55)`;
+      item.addEventListener("transitionend", () => {
+        item.style.pointerEvents = "none";
+        collectClue(clue.id);
+      }, { once: true });
+    } else {
+      item.style.transform = "translate(-50%, -50%)";
+      item.addEventListener("transitionend", () => {
+        item.classList.remove("dragging");
+      }, { once: true });
+    }
+    itemDrag = null;
+  }
+
+  item.addEventListener("pointerup", endItemDrag);
+  item.addEventListener("pointercancel", endItemDrag);
+}
+
 function buildCardElement(card, index) {
   const el = document.createElement("div");
   el.className = "card";
@@ -113,7 +200,9 @@ function buildCardElement(card, index) {
     // every card is built up front while #card-stack is still hidden, so
     // the canvas would measure 0x0 (display:none collapses clientWidth/
     // Height) if initialized immediately.
-    if (card.clue && card.clue.hotspot) {
+    if (card.clue && card.clue.drag) {
+      attachDragClue(el, card.clue);
+    } else if (card.clue && card.clue.hotspot) {
       attachHotspotClue(el, card.clue);
     } else if (card.clue && card.clue.pos) {
       const clueBtn = document.createElement("button");

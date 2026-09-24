@@ -3,10 +3,15 @@
 // 环球影城 / 长城. No caption text for now (`story`/`detail` left empty —
 // card-text-overlay simply doesn't render when there's nothing to show).
 //
-// Pages 1 (strawberry), 5 (beihai-park, camera clue) and 6
-// (provence-garden, bracelet clue) are meant to become the three special
-// interactive pages once the user provides separated interactive
-// elements for them — paused for now, see giftClues below.
+// Pages 5 (beihai-park, camera clue) and 6 (provence-garden, bracelet
+// clue) are still paused pending separated elements. Page 1 (strawberry)
+// is live: `clue.drag` places a separately-provided strawberry and basket
+// on top of the scene — drag the strawberry into the basket (positioned
+// over the girl's hand) to collect it. One successful drag is enough, no
+// need to "fill" the basket. Positions are {x, y} percentages of the
+// card's own size, picked by eye from the photo; sizes are percentages
+// of the card's width (images are square with transparent padding, so
+// the drawn object reads smaller than the box).
 //
 // `effect` gives the other five pages some ambient motion (see
 // js/ambientEffects.js) without needing separated art — chosen per scene
@@ -22,7 +27,23 @@
 // - glow-pulse (universal-studios): a soft pulsing glow centered on the
 //   tunnel's own purple lighting, plus a few sparkles.
 export const memoryNodes = [
-  { id: "node-1", photos: ["assets/images/scenes/strawberry-farm.jpg"], story: "", detail: "" },
+  {
+    id: "node-1",
+    photos: ["assets/images/scenes/strawberry-farm.jpg"],
+    story: "",
+    detail: "",
+    clue: {
+      id: "clue-mirror",
+      drag: {
+        itemIcon: "assets/images/clues/strawberry-item.png",
+        itemPos: { x: "11%", y: "72%" },
+        itemSize: "13%",
+        basketIcon: "assets/images/clues/basket.png",
+        basketPos: { x: "88%", y: "53%" },
+        basketSize: "24%",
+      },
+    },
+  },
   { id: "node-2", photos: ["assets/images/scenes/riverside.jpg"], story: "", detail: "", effect: "rain-fireworks" },
   { id: "node-3", photos: ["assets/images/scenes/mcdonalds.jpg"], story: "", detail: "", effect: "twinkle-chase" },
   { id: "node-4", photos: ["assets/images/scenes/forbidden-city.jpg"], story: "", detail: "", effect: "petals-pink" },

@@ -7,7 +7,9 @@ export function buildCardSequence({ memoryNodes, letterParagraphs, giftText }) {
     const accent = ACCENT_CYCLE[groupIndex % ACCENT_CYCLE.length];
     node.photos.forEach((photo, photoIndex) => {
       const text = photoIndex === 0 ? node.story : (node.detail || "");
-      cards.push({ kind: "memory", groupIndex, photo, text, accent, effect: node.effect });
+      const card = { kind: "memory", groupIndex, photo, text, accent, effect: node.effect };
+      if (photoIndex === 0 && node.clue) card.clue = node.clue;
+      cards.push(card);
     });
   });
 
